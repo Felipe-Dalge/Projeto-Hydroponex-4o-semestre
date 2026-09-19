@@ -1,0 +1,14 @@
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 4px; }
+        .dark .custom-scrollbar::-webkit-scrollbar-thumb { background: #475569; }
+
+        /* OTIMIZAÇÃO TROCA DE TEMA: enquanto esta classe está no <html>, todas as
+           transições da página são desligadas. Isso evita que o navegador tente
+           animar (300ms) centenas de elementos com "transition-colors/all" ao
+           mesmo tempo quando a classe .dark é alternada — que é o que causava a
+           travada. Não altera nenhuma classe/estilo existente, apenas suspende
+           a ANIMAÇÃO da transição por uma fração de segundo durante a troca. */
+        .theme-switching, .theme-switching * {
+            transition: none !important;
+        }
