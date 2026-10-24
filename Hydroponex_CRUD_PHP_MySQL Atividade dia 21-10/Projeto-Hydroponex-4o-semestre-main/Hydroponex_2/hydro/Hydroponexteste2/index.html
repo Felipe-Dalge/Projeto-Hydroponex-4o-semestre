@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hydroponex - Agricultura Inteligente & Sustentável</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Configuração do Tailwind (Cores, Fontes e Dark Mode por Classe) -->
+    <script src="tailwind.config.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="h-full bg-slate-50 dark:bg-darkbg-900 text-slate-800 dark:text-slate-100 antialiased font-sans custom-scrollbar flex flex-col transition-colors duration-300">
+
+    <!-- NAV BAR SUPERIOR (Global / Visível apenas no App) -->
+    <header id="app-header" class="hidden bg-white dark:bg-darkbg-800 border-b border-slate-200 dark:border-slate-700/80 sticky top-0 z-30 transition-colors duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <button id="mobile-menu-btn" class="md:hidden p-2 rounded-md text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-700">
+                        <i data-lucide="menu" class="w-6 h-6"></i>
+                    </button>
+                    <div class="flex items-center gap-2 cursor-pointer" onclick="navigateTo('dashboard')">
+                        <div class="p-2 bg-hydro-500 text-white rounded-xl shadow-md shadow-hydro-500/20">
+                            <i data-lucide="sprout" class="w-6 h-6"></i>
+                        </div>
+                        <span class="text-xl font-bold bg-gradient-to-r from-hydro-700 to-water-600 dark:from-hydro-400 dark:to-water-400 bg-clip-text text-transparent">Hydroponex</span>
+                    </div>
+                </div>
+
+                <!-- Perfil & Botão do Tema no Canto Superior -->
+                <div class="flex items-center gap-3 sm:gap-4">
+                    <!-- Alternador Rápido de Tema Header -->
+                    <button onclick="toggleTheme()" class="p-2.5 rounded-xl bg-slate-100 dark:bg-darkbg-700 text-slate-600 dark:text-amber-400 hover:bg-slate-200 dark:hover:bg-slate-600 transition-all">
+                        <i data-lucide="sun" class="w-5 h-5 hidden dark:block"></i>
+                        <i data-lucide="moon" class="w-5 h-5 block dark:hidden"></i>
+                    </button>
+
+                    <div class="flex items-center gap-3 pl-3 border-l border-slate-200 dark:border-slate-700">
+                        <img id="header-avatar" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=256" alt="Avatar" class="w-9 h-9 rounded-full object-cover ring-2 ring-hydro-400">
+                        <div class="hidden sm:block text-left">
+                            <p id="header-user-name" class="text-sm font-semibold text-slate-700 dark:text-slate-200">Ana Silva</p>
+                            <p class="text-xs text-slate-500 dark:text-slate-400">Produtor Hidropônico</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="flex-1 flex overflow-hidden">
+        
+        <!-- MENU LATERAL (SIDEBAR - App View) -->
+        <aside id="app-sidebar" class="hidden md:flex md:flex-col w-64 bg-white dark:bg-darkbg-800 border-r border-slate-200 dark:border-slate-700/80 shrink-0 transition-colors duration-300">
+            <div class="flex flex-col justify-between h-full p-4">
+                <nav class="space-y-1">
+                    <button onclick="navigateTo('dashboard')" class="nav-link w-full flex items-center gap-3 px-3 py-2.5 text-sm font-medium rounded-xl transition-all text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700/50" data-page="dashboard">
+                        <i data-lucide="home" class="w-5 h-5"></i>  Início
+                    </button>
+                    <button onclick="navigateTo('plantas')" class="nav-link w-full flex items-center gap-3 px-3 py-2.5 text-sm font-medium rounded-xl transition-all text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700/50" data-page="plantas">
+                        <i data-lucide="sprout" class="w-5 h-5"></i>  Plantas
+                    </button>
+                    <button onclick="navigateTo('monitoramento')" class="nav-link w-full flex items-center gap-3 px-3 py-2.5 text-sm font-medium rounded-xl transition-all text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700/50" data-page="monitoramento">
+                        <i data-lucide="activity" class="w-5 h-5"></i>  Monitoramento
+                    </button>
+                    <button onclick="navigateTo('consumo')" class="nav-link w-full flex items-center gap-3 px-3 py-2.5 text-sm font-medium rounded-xl transition-all text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700/50" data-page="consumo">
+                        <i data-lucide="droplet" class="w-5 h-5"></i>  Consumo de água
+                    </button>
+                    <button onclick="navigateTo('perfil')" class="nav-link w-full flex items-center gap-3 px-3 py-2.5 text-sm font-medium rounded-xl transition-all text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700/50" data-page="perfil">
+                        <i data-lucide="user" class="w-5 h-5"></i>  Perfil
+                    </button>
+                    <button onclick="navigateTo('configuracoes')" class="nav-link w-full flex items-center gap-3 px-3 py-2.5 text-sm font-medium rounded-xl transition-all text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700/50" data-page="configuracoes">
+                        <i data-lucide="settings" class="w-5 h-5"></i>  Configurações
+                    </button>
+                </nav>
+
+                <div class="pt-4 border-t border-slate-100 dark:border-slate-700/80 space-y-2">
+                    <button onclick="logout()" class="w-full flex items-center gap-3 px-3 py-2.5 text-sm font-medium text-red-600 dark:text-red-400 rounded-xl hover:bg-red-50 dark:hover:bg-red-950/30 transition-all">
+                        <i data-lucide="log-out" class="w-5 h-5"></i>  Sair
+                    </button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- MENU MOBILE SOBREPOSTO -->
+        <div id="mobile-sidebar" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-40 hidden md:hidden">
+            <div class="w-64 bg-white dark:bg-darkbg-800 h-full p-4 flex flex-col justify-between">
+                <div class="space-y-4">
+                    <div class="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-700">
+                        <span class="font-bold text-slate-800 dark:text-white flex items-center gap-2">
+                            <i data-lucide="sprout" class="text-hydro-500"></i> Hydroponex
+                        </span>
+                        <button id="close-mobile-menu" class="p-1 rounded-lg text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-700"><i data-lucide="x"></i></button>
+                    </div>
+                    <nav class="space-y-1">
+                        <button onclick="navigateTo('dashboard'); closeMobileMenu();" class="nav-link-mobile w-full flex items-center gap-3 px-3 py-2.5 text-sm font-medium rounded-xl text-slate-600 dark:text-slate-300">🏠 Início</button>
+                        <button onclick="navigateTo('plantas'); closeMobileMenu();" class="nav-link-mobile w-full flex items-center gap-3 px-3 py-2.5 text-sm font-medium rounded-xl text-slate-600 dark:text-slate-300">🌱 Plantas</button>
+                        <button onclick="navigateTo('monitoramento'); closeMobileMenu();" class="nav-link-mobile w-full flex items-center gap-3 px-3 py-2.5 text-sm font-medium rounded-xl text-slate-600 dark:text-slate-300">📊 Monitoramento</button>
+                        <button onclick="navigateTo('consumo'); closeMobileMenu();" class="nav-link-mobile w-full flex items-center gap-3 px-3 py-2.5 text-sm font-medium rounded-xl text-slate-600 dark:text-slate-300">💧 Consumo de água</button>
+                        <button onclick="navigateTo('perfil'); closeMobileMenu();" class="nav-link-mobile w-full flex items-center gap-3 px-3 py-2.5 text-sm font-medium rounded-xl text-slate-600 dark:text-slate-300">👤 Perfil</button>
+                        <button onclick="navigateTo('configuracoes'); closeMobileMenu();" class="nav-link-mobile w-full flex items-center gap-3 px-3 py-2.5 text-sm font-medium rounded-xl text-slate-600 dark:text-slate-300">⚙️ Configurações</button>
+                    </nav>
+                </div>
+                <div class="space-y-2 border-t border-slate-100 dark:border-slate-700 pt-4">
+                    <button onclick="toggleTheme()" class="w-full flex items-center gap-3 px-3 py-2.5 text-sm font-medium text-slate-600 dark:text-slate-300 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700">
+                        <i data-lucide="moon" class="w-5 h-5 block dark:hidden"></i>
+                        <i data-lucide="sun" class="w-5 h-5 hidden dark:block text-amber-400"></i>
+                        Modo <span class="dark:hidden">Escuro</span><span class="hidden dark:inline">Claro</span>
+                    </button>
+                    <button onclick="logout(); closeMobileMenu();" class="w-full flex items-center gap-3 px-3 py-2.5 text-sm font-medium text-red-600 dark:text-red-400 rounded-xl hover:bg-red-50 dark:hover:bg-red-950/30">🚪 Sair</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- CONTEÚDO PRINCIPAL (CONTAINER DINÂMICO DE VIEWS) -->
+        <main class="flex-1 overflow-y-auto custom-scrollbar bg-slate-50 dark:bg-darkbg-900 transition-colors duration-300 relative">
+
+            <!-- 1. LANDING PAGE INSTITUCIONAL -->
+            <section id="view-landing" class="view-page">
+                <!-- Header da Landing Page -->
+                <nav class="max-w-7xl mx-auto px-6 py-6 flex justify-between items-center">
+                    <div class="flex items-center gap-2">
+                        <div class="p-2 bg-hydro-500 text-white rounded-xl shadow-lg shadow-hydro-500/30">
+                            <i data-lucide="sprout" class="w-7 h-7"></i>
+                        </div>
+                        <span class="text-2xl font-bold text-slate-900 dark:text-white">Hydroponex</span>
+                    </div>
+                    <div class="flex items-center gap-3 sm:gap-4">
+                        <button onclick="toggleTheme()" class="p-2.5 rounded-xl bg-white dark:bg-darkbg-800 text-slate-600 dark:text-amber-400 shadow-sm border border-slate-200 dark:border-slate-700">
+                            <i data-lucide="sun" class="w-5 h-5 hidden dark:block"></i>
+                            <i data-lucide="moon" class="w-5 h-5 block dark:hidden"></i>
+                        </button>
+                        <button onclick="navigateTo('login')" class="px-5 py-2.5 text-sm font-semibold text-hydro-700 dark:text-hydro-400 bg-hydro-50 dark:bg-hydro-950/50 hover:bg-hydro-100 dark:hover:bg-hydro-900/50 rounded-xl transition-all">Acessar Sistema</button>
+                        <button onclick="navigateTo('cadastro')" class="hidden sm:block px-5 py-2.5 text-sm font-semibold text-white bg-hydro-500 hover:bg-hydro-600 rounded-xl shadow-md shadow-hydro-500/20 transition-all">Cadastrar-se</button>
+                    </div>
+                </nav>
+
+                <!-- Hero Section -->
+                <div class="max-w-7xl mx-auto px-6 pt-12 pb-20 text-center lg:text-left grid lg:grid-cols-2 gap-12 items-center">
+                    <div>
+                        <span class="px-4 py-1.5 rounded-full text-xs font-bold bg-hydro-100 dark:bg-hydro-950 text-hydro-800 dark:text-hydro-300 uppercase tracking-wide border border-hydro-200 dark:border-hydro-800">
+                            🌱 O Futuro da Agricultura Inteligente
+                        </span>
+                        <h1 class="mt-6 text-4xl sm:text-5xl lg:text-6xl font-extrabold text-slate-900 dark:text-white leading-tight">
+                            Cultive o amanhã economizando até <span class="bg-gradient-to-r from-hydro-500 to-water-500 bg-clip-text text-transparent">95% de água</span>.
+                        </h1>
+                        <p class="mt-6 text-lg text-slate-600 dark:text-slate-300 leading-relaxed">
+                            O <strong>Hydroponex</strong> integra tecnologia IOT e hidroponia avançada para otimizar o cultivo sem solo, reduzindo dramaticamente o consumo hídrico e aumentando a produtividade da sua horta com monitoramento inteligente em tempo real.
+                        </p>
+                        <div class="mt-8 flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+                            <button onclick="navigateTo('login')" class="px-8 py-4 bg-hydro-500 hover:bg-hydro-600 text-white font-bold rounded-2xl shadow-lg shadow-hydro-500/30 hover:scale-[1.02] transition-all flex items-center justify-center gap-2">
+                                Entrar no Sistema <i data-lucide="arrow-right" class="w-5 h-5"></i>
+                            </button>
+                            <a href="#oque-e" class="px-8 py-4 bg-white dark:bg-darkbg-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 font-bold rounded-2xl hover:bg-slate-50 dark:hover:bg-slate-700 transition-all flex items-center justify-center">
+                                Saiba Mais
+                            </a>
+                        </div>
+                    </div>
+                    <div class="relative">
+                        <div class="absolute -inset-1 bg-gradient-to-r from-hydro-400 to-water-400 rounded-3xl blur-2xl opacity-30"></div>
+                        <img src="https://ibb.co/FkNnjqC8/Imagem-Logo-Site.png" alt="Horta Hidropônica Tecnológica" ... class="relative rounded-3xl shadow-2xl object-cover w-full h-[415px] border border-white dark:border-slate-600">
+                    </div>
+                </div>
+
+                <!-- O que é Hidroponia? & Vantagens -->
+                <div id="oque-e" class="bg-white dark:bg-darkbg-800 py-20 border-t border-slate-100 dark:border-slate-700/80 transition-colors">
+                    <div class="max-w-7xl mx-auto px-6">
+                        <div class="text-center max-w-3xl mx-auto">
+                            <h2 class="text-3xl font-extrabold text-slate-900 dark:text-white">O que é Hidroponia?</h2>
+                            <p class="mt-4 text-slate-600 dark:text-slate-300 text-lg leading-relaxed">
+                                A hidroponia é uma técnica sustentável de cultivo agrícola onde as plantas crescem <strong>sem a necessidade de solo</strong>. Suas raízes ficam submersas em uma solução aquosa rica em nutrientes e minerais estritamente dosados e reciclados continuamente.
+                            </p>
+                        </div>
+
+                        <div class="mt-16 grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                            <!-- Cards Vantagens -->
+                            <div class="p-8 bg-slate-50 dark:bg-darkbg-900 rounded-2xl border border-slate-100 dark:border-slate-700/50 hover:shadow-xl hover:-translate-y-1 transition-all">
+                                <div class="w-12 h-12 bg-water-500/10 text-water-600 dark:text-water-400 rounded-xl flex items-center justify-center mb-6">
+                                    <i data-lucide="droplets" class="w-6 h-6"></i>
+                                </div>
+                                <h3 class="text-xl font-bold text-slate-800 dark:text-white">Redução do Consumo de Água</h3>
+                                <p class="mt-2 text-slate-600 dark:text-slate-400 text-sm">A água circula em sistema fechado, evitando evaporação e desperdício. Economia de até 95% em relação à agricultura tradicional.</p>
+                            </div>
+
+                            <div class="p-8 bg-slate-50 dark:bg-darkbg-900 rounded-2xl border border-slate-100 dark:border-slate-700/50 hover:shadow-xl hover:-translate-y-1 transition-all">
+                                <div class="w-12 h-12 bg-hydro-500/10 text-hydro-600 dark:text-hydro-400 rounded-xl flex items-center justify-center mb-6">
+                                    <i data-lucide="zap" class="w-6 h-6"></i>
+                                </div>
+                                <h3 class="text-xl font-bold text-slate-800 dark:text-white">Uso Eficiente dos Nutrientes</h3>
+                                <p class="mt-2 text-slate-600 dark:text-slate-400 text-sm">Sais minerais são entregues diretamente nas raízes na medida exata necessária para o rápido desenvolvimento das culturas.</p>
+                            </div>
+
+                            <div class="p-8 bg-slate-50 dark:bg-darkbg-900 rounded-2xl border border-slate-100 dark:border-slate-700/50 hover:shadow-xl hover:-translate-y-1 transition-all">
+                                <div class="w-12 h-12 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 rounded-xl flex items-center justify-center mb-6">
+                                    <i data-lucide="maximize" class="w-6 h-6"></i>
+                                </div>
+                                <h3 class="text-xl font-bold text-slate-800 dark:text-white">Cultivo em Espaços Menores</h3>
+                                <p class="mt-2 text-slate-600 dark:text-slate-400 text-sm">Permite estruturas verticais e urbanas, produzindo muito mais alimentos por metro quadrado e próximo ao consumidor final.</p>
+                            </div>
+
+                            <div class="p-8 bg-slate-50 dark:bg-darkbg-900 rounded-2xl border border-slate-100 dark:border-slate-700/50 hover:shadow-xl hover:-translate-y-1 transition-all">
+                                <div class="w-12 h-12 bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 rounded-xl flex items-center justify-center mb-6">
+                                    <i data-lucide="activity" class="w-6 h-6"></i>
+                                </div>
+                                <h3 class="text-xl font-bold text-slate-800 dark:text-white">Monitoramento Preciso</h3>
+                                <p class="mt-2 text-slate-600 dark:text-slate-400 text-sm">Acompanhamento contínuo de pH, condutividade elétrica, temperatura e umidade com alertas preventivos de desvios.</p>
+                            </div>
+
+                            <div class="p-8 bg-slate-50 dark:bg-darkbg-900 rounded-2xl border border-slate-100 dark:border-slate-700/50 hover:shadow-xl hover:-translate-y-1 transition-all">
+                                <div class="w-12 h-12 bg-amber-500/10 text-amber-600 dark:text-amber-400 rounded-xl flex items-center justify-center mb-6">
+                                    <i data-lucide="sliders" class="w-6 h-6"></i>
+                                </div>
+                                <h3 class="text-xl font-bold text-slate-800 dark:text-white">Produção Controlada</h3>
+                                <p class="mt-2 text-slate-600 dark:text-slate-400 text-sm">Independência de intempéries climáticas e pragas do solo, garantindo safras constantes durante todo o ano.</p>
+                            </div>
+
+                            <div class="p-8 bg-slate-50 dark:bg-darkbg-900 rounded-2xl border border-slate-100 dark:border-slate-700/50 hover:shadow-xl hover:-translate-y-1 transition-all">
+                                <div class="w-12 h-12 bg-teal-500/10 text-teal-600 dark:text-teal-400 rounded-xl flex items-center justify-center mb-6">
+                                    <i data-lucide="cpu" class="w-6 h-6"></i>
+                                </div>
+                                <h3 class="text-xl font-bold text-slate-800 dark:text-white">Tecnologia Integrada</h3>
+                                <p class="mt-2 text-slate-600 dark:text-slate-400 text-sm">Automação de irrigação, dosagem de nutrientes e análises de dados inteligentes via sensores IOT integrados.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Footer Landing Page -->
+                <footer class="bg-slate-900 dark:bg-darkbg-900 text-slate-400 py-10 border-t border-slate-800">
+                    <div class="max-w-7xl mx-auto px-6 text-center text-sm">
+                        <p>© 2026 Hydroponex. Agricultura Inteligente e Sustentável. Todos os direitos reservados.</p>
+                    </div>
+                </footer>
+            </section>
+
+            <!-- 2. PÁGINA DE LOGIN -->
+            <section id="view-login" class="view-page hidden min-h-screen flex items-center justify-center p-6 bg-slate-100 dark:bg-darkbg-900">
+                <div class="w-full max-w-md bg-white dark:bg-darkbg-800 rounded-3xl shadow-xl border border-slate-200/80 dark:border-slate-700/80 p-8">
+                    <div class="text-center mb-8">
+                        <div class="inline-flex p-3 bg-hydro-500 text-white rounded-2xl shadow-md shadow-hydro-500/30 mb-3">
+                            <i data-lucide="sprout" class="w-8 h-8"></i>
+                        </div>
+                        <h2 class="text-2xl font-bold text-slate-900 dark:text-white">Acessar Hydroponex</h2>
+                        <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Gerencie sua horta sustentável</p>
+                    </div>
+
+                    <form onsubmit="handleLogin(event)" class="space-y-4">
+                        <div>
+                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1">E-mail ou Usuário</label>
+                            <div class="relative">
+                                <i data-lucide="mail" class="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                                <input type="text" id="login-email" required value="ana.silva@hydroponex.io" class="w-full pl-10 pr-4 py-3 bg-slate-50 dark:bg-darkbg-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-hydro-500 text-sm dark:text-white">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1">Senha</label>
+                            <div class="relative">
+                                <i data-lucide="lock" class="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                                <input type="password" id="login-password" required value="123456" class="w-full pl-10 pr-4 py-3 bg-slate-50 dark:bg-darkbg-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-hydro-500 text-sm dark:text-white">
+                            </div>
+                        </div>
+
+                        <div class="flex items-center justify-between text-xs">
+                            <label class="flex items-center gap-2 text-slate-600 dark:text-slate-400 cursor-pointer">
+                                <input type="checkbox" checked class="rounded border-slate-300 dark:border-slate-700 text-hydro-500 focus:ring-hydro-500">
+                                Lembrar-me
+                            </label>
+                            <button type="button" onclick="navigateTo('recuperar-senha')" class="text-hydro-600 dark:text-hydro-400 font-semibold hover:underline">Esqueceu a senha?</button>
+                        </div>
+
+                        <button type="submit" class="w-full py-3.5 bg-hydro-500 hover:bg-hydro-600 text-white font-bold rounded-xl shadow-lg shadow-hydro-500/20 transition-all flex items-center justify-center gap-2">
+                            Entrar no Painel <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                        </button>
+                    </form>
+
+                    <div class="mt-6 text-center text-xs text-slate-500 dark:text-slate-400 border-t border-slate-100 dark:border-slate-700/80 pt-6">
+                        Ainda não possui conta? <button onclick="navigateTo('cadastro')" class="text-hydro-600 dark:text-hydro-400 font-bold hover:underline">Criar Conta</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 3. PÁGINA DE CADASTRO -->
+            <section id="view-cadastro" class="view-page hidden min-h-screen flex items-center justify-center p-6 bg-slate-100 dark:bg-darkbg-900">
+                <div class="w-full max-w-md bg-white dark:bg-darkbg-800 rounded-3xl shadow-xl border border-slate-200/80 dark:border-slate-700/80 p-8">
+                    <div class="text-center mb-8">
+                        <div class="inline-flex p-3 bg-hydro-500 text-white rounded-2xl shadow-md shadow-hydro-500/30 mb-3">
+                            <i data-lucide="user-plus" class="w-8 h-8"></i>
+                        </div>
+                        <h2 class="text-2xl font-bold text-slate-900 dark:text-white">Criar Nova Conta</h2>
+                        <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Junte-se à revolução da agricultura urbana</p>
+                    </div>
+
+                    <form onsubmit="handleRegister(event)" class="space-y-4">
+                        <div>
+                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1">Nome Completo</label>
+                            <input type="text" id="register-name" required placeholder="Seu Nome" class="w-full px-4 py-3 bg-slate-50 dark:bg-darkbg-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-hydro-500 text-sm dark:text-white">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1">E-mail</label>
+                            <input type="email" id="register-email" required placeholder="seu@email.com" class="w-full px-4 py-3 bg-slate-50 dark:bg-darkbg-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-hydro-500 text-sm dark:text-white">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1">Senha</label>
+                            <input type="password" required placeholder="••••••••" class="w-full px-4 py-3 bg-slate-50 dark:bg-darkbg-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-hydro-500 text-sm dark:text-white">
+                        </div>
+
+                        <button type="submit" class="w-full py-3.5 bg-hydro-500 hover:bg-hydro-600 text-white font-bold rounded-xl shadow-lg shadow-hydro-500/20 transition-all">
+                            Concluir Cadastro
+                        </button>
+                    </form>
+
+                    <div class="mt-6 text-center text-xs text-slate-500 dark:text-slate-400 border-t border-slate-100 dark:border-slate-700/80 pt-6">
+                        Já tem uma conta? <button onclick="navigateTo('login')" class="text-hydro-600 dark:text-hydro-400 font-bold hover:underline">Fazer Login</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 4. PÁGINA RECUPERAR SENHA -->
+            <section id="view-recuperar-senha" class="view-page hidden min-h-screen flex items-center justify-center p-6 bg-slate-100 dark:bg-darkbg-900">
+                <div class="w-full max-w-md bg-white dark:bg-darkbg-800 rounded-3xl shadow-xl border border-slate-200/80 dark:border-slate-700/80 p-8">
+                    <div class="text-center mb-8">
+                        <div class="inline-flex p-3 bg-water-500 text-white rounded-2xl shadow-md mb-3">
+                            <i data-lucide="key-round" class="w-8 h-8"></i>
+                        </div>
+                        <h2 class="text-2xl font-bold text-slate-900 dark:text-white">Recuperar Senha</h2>
+                        <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Instruções serão enviadas para o seu e-mail</p>
+                    </div>
+
+                    <form onsubmit="handleRecovery(event)" class="space-y-4">
+                        <div>
+                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1">E-mail Cadastrado</label>
+                            <input type="email" required placeholder="seu@email.com" class="w-full px-4 py-3 bg-slate-50 dark:bg-darkbg-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-hydro-500 text-sm dark:text-white">
+                        </div>
+
+                        <button type="submit" class="w-full py-3.5 bg-hydro-500 hover:bg-hydro-600 text-white font-bold rounded-xl shadow-lg transition-all">
+                            Enviar Link de Recuperação
+                        </button>
+                    </form>
+
+                    <div class="mt-6 text-center text-xs text-slate-500 dark:text-slate-400 border-t border-slate-100 dark:border-slate-700/80 pt-6">
+                        Voltar para <button onclick="navigateTo('login')" class="text-hydro-600 dark:text-hydro-400 font-bold hover:underline">Login</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 5. DASHBOARD PRINCIPAL -->
+            <section id="view-dashboard" class="view-page p-6 max-w-7xl mx-auto space-y-6">
+                <!-- Banner de Boas-Vindas -->
+                <div class="bg-gradient-to-r from-hydro-800 to-hydro-900 dark:from-hydro-900 dark:to-slate-900 text-white p-6 sm:p-8 rounded-3xl shadow-xl flex flex-col md:flex-row justify-between items-start md:items-center gap-4 relative overflow-hidden border border-hydro-700/30">
+                    <div class="absolute -right-10 -bottom-10 w-48 h-48 bg-hydro-500/20 rounded-full blur-3xl"></div>
+                    <div>
+                        <h1 class="text-2xl sm:text-3xl font-extrabold">Olá, <span id="dash-user-name">Ana Silva</span> 👋</h1>
+                        <p class="text-hydro-200 text-sm mt-1">Sua horta hidropônica está operando com alta eficiência hídrica hoje.</p>
+                    </div>
+                    <div class="flex items-center gap-2 bg-white/10 backdrop-blur-md px-4 py-2 rounded-2xl border border-white/20 text-xs font-semibold">
+                        <span class="w-2.5 h-2.5 bg-hydro-400 rounded-full animate-ping"></span>
+                        Sensores Conectados
+                    </div>
+                </div>
+
+                <!-- CARDS RESUMO DO SISTEMA -->
+                <div class="grid grid-cols-2 lg:grid-cols-6 gap-4">
+                    <!-- Total Plantas -->
+                    <div class="bg-white dark:bg-darkbg-800 p-5 rounded-2xl border border-slate-200/80 dark:border-slate-700/80 shadow-sm col-span-2 sm:col-span-1 lg:col-span-1">
+                        <div class="flex items-center justify-between text-slate-500 dark:text-slate-400 text-xs font-bold uppercase mb-2">
+                            <span>Total Plantas</span>
+                            <i data-lucide="sprout" class="w-4 h-4 text-hydro-500"></i>
+                        </div>
+                        <p id="stat-total" class="text-3xl font-black text-slate-800 dark:text-white">0</p>
+                    </div>
+                    <!-- Status Verde -->
+                    <div class="bg-white dark:bg-darkbg-800 p-5 rounded-2xl border border-emerald-200 dark:border-emerald-900/50 shadow-sm bg-emerald-50/30 dark:bg-emerald-950/10">
+                        <div class="flex items-center justify-between text-emerald-700 dark:text-emerald-400 text-xs font-bold uppercase mb-2">
+                            <span>Normal</span>
+                            <span class="w-3 h-3 bg-emerald-500 rounded-full"></span>
+                        </div>
+                        <p id="stat-normal" class="text-3xl font-black text-emerald-700 dark:text-emerald-400">0</p>
+                    </div>
+                    <!-- Status Amarelo -->
+                    <div class="bg-white dark:bg-darkbg-800 p-5 rounded-2xl border border-amber-200 dark:border-amber-900/50 shadow-sm bg-amber-50/30 dark:bg-amber-950/10">
+                        <div class="flex items-center justify-between text-amber-700 dark:text-amber-400 text-xs font-bold uppercase mb-2">
+                            <span>Atenção</span>
+                            <span class="w-3 h-3 bg-amber-500 rounded-full"></span>
+                        </div>
+                        <p id="stat-atencao" class="text-3xl font-black text-amber-700 dark:text-amber-400">0</p>
+                    </div>
+                    <!-- Status Vermelho -->
+                    <div class="bg-white dark:bg-darkbg-800 p-5 rounded-2xl border border-rose-200 dark:border-rose-900/50 shadow-sm bg-rose-50/30 dark:bg-rose-950/10">
+                        <div class="flex items-center justify-between text-rose-700 dark:text-rose-400 text-xs font-bold uppercase mb-2">
+                            <span>Alerta</span>
+                            <span class="w-3 h-3 bg-rose-500 rounded-full"></span>
+                        </div>
+                        <p id="stat-alerta" class="text-3xl font-black text-rose-700 dark:text-rose-400">0</p>
+                    </div>
+                    <!-- Consumo de Água Est. -->
+                    <div class="bg-white dark:bg-darkbg-800 p-5 rounded-2xl border border-slate-200/80 dark:border-slate-700/80 shadow-sm col-span-2 sm:col-span-1 lg:col-span-1">
+                        <div class="flex items-center justify-between text-slate-500 dark:text-slate-400 text-xs font-bold uppercase mb-2">
+                            <span>Consumo Hoje</span>
+                            <i data-lucide="droplet" class="w-4 h-4 text-water-500"></i>
+                        </div>
+                        <p id="stat-consumo" class="text-3xl font-black text-slate-800 dark:text-white">12.4 L</p>
+                    </div>
+                    <!-- Estado Geral -->
+                    <div class="bg-white dark:bg-darkbg-800 p-5 rounded-2xl border border-slate-200/80 dark:border-slate-700/80 shadow-sm col-span-2 sm:col-span-1 lg:col-span-1">
+                        <div class="flex items-center justify-between text-slate-500 dark:text-slate-400 text-xs font-bold uppercase mb-2">
+                            <span>Estado Geral</span>
+                            <i data-lucide="shield-check" class="w-4 h-4 text-hydro-500"></i>
+                        </div>
+                        <span id="stat-estado-geral" class="inline-block px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300">Ótimo</span>
+                    </div>
+                </div>
+
+                <!-- GRÁFICOS DO DASHBOARD -->
+                <div class="grid lg:grid-cols-3 gap-6">
+                    <div class="lg:col-span-2 bg-white dark:bg-darkbg-800 p-6 rounded-3xl border border-slate-200/80 dark:border-slate-700/80 shadow-sm">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="font-bold text-slate-800 dark:text-white text-base">Consumo x Economia de Água (Litros/Dia)</h3>
+                            <span class="text-xs text-slate-400">Últimos 7 dias</span>
+                        </div>
+                        <div class="h-64 relative">
+                            <canvas id="chart-dash-consumo"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="bg-white dark:bg-darkbg-800 p-6 rounded-3xl border border-slate-200/80 dark:border-slate-700/80 shadow-sm flex flex-col justify-between">
+                        <h3 class="font-bold text-slate-800 dark:text-white text-base mb-4">Distribuição do Estado da Horta</h3>
+                        <div class="h-56 relative flex items-center justify-center">
+                            <canvas id="chart-dash-status"></canvas>
+                        </div>
+                        <p class="text-center text-xs text-slate-500 dark:text-slate-400 mt-4">Proporção das plantas monitoradas</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 6. PLANTAS (GESTÃO DE CADASTRO) -->
+            <section id="view-plantas" class="view-page hidden p-6 max-w-7xl mx-auto space-y-6">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                    <div>
+                        <h1 class="text-2xl font-bold text-slate-900 dark:text-white">Gerenciamento de Plantas</h1>
+                        <p class="text-slate-500 dark:text-slate-400 text-sm">Cadastre e gerencie as espécies ativas no sistema hidropônico.</p>
+                    </div>
+                    <button onclick="openModalNovaPlanta()" class="px-5 py-2.5 bg-hydro-500 hover:bg-hydro-600 text-white font-bold rounded-xl shadow-md transition-all flex items-center gap-2 text-sm">
+                        <i data-lucide="plus-circle" class="w-4 h-4"></i> Cadastrar Nova Planta
+                    </button>
+                </div>
+
+                <div class="bg-white dark:bg-darkbg-800 rounded-3xl border border-slate-200/80 dark:border-slate-700/80 shadow-sm overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-slate-50 dark:bg-darkbg-900 border-b border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                                    <th class="p-4 pl-6">Planta</th>
+                                    <th class="p-4">Bancada / Local</th>
+                                    <th class="p-4">Ideal Temp (°C)</th>
+                                    <th class="p-4">Ideal Nutrientes (ppm)</th>
+                                    <th class="p-4">Status</th>
+                                    <th class="p-4 text-right pr-6">Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="table-plantas-body" class="divide-y divide-slate-100 dark:divide-slate-700/50 text-sm">
+                                <!-- Preenchido dinamicamente via JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 7. MONITORAMENTO (CARDS COM OS 3 ESTADOS RIGOROSOS) -->
+            <section id="view-monitoramento" class="view-page hidden p-6 max-w-7xl mx-auto space-y-6">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                    <div>
+                        <h1 class="text-2xl font-bold text-slate-900 dark:text-white">Monitoramento em Tempo Real</h1>
+                        <p class="text-slate-500 dark:text-slate-400 text-sm">Acompanhe os parâmetros vitais transmitidos pelos sensores de cada cultivar.</p>
+                    </div>
+                    <!-- Filtros de Status -->
+                    <div class="flex items-center gap-2 bg-white dark:bg-darkbg-800 p-1 rounded-2xl border border-slate-200 dark:border-slate-700 text-xs">
+                        <button onclick="filterMonitor('todos')" class="px-3 py-1.5 rounded-xl font-bold transition-all bg-slate-100 dark:bg-slate-700 text-slate-800 dark:text-white">Todos</button>
+                        <button onclick="filterMonitor('Normal')" class="px-3 py-1.5 rounded-xl font-bold transition-all text-emerald-700 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-950/40">🟢 Normal</button>
+                        <button onclick="filterMonitor('Atenção')" class="px-3 py-1.5 rounded-xl font-bold transition-all text-amber-700 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-950/40">🟡 Atenção</button>
+                        <button onclick="filterMonitor('Alerta')" class="px-3 py-1.5 rounded-xl font-bold transition-all text-rose-700 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40">🔴 Alerta</button>
+                    </div>
+                </div>
+
+                <!-- Grid de Cards de Monitoramento -->
+                <div id="grid-monitoramento" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Cards renderizados dinamicamente via JS -->
+                </div>
+            </section>
+
+            <!-- 8. CONSUMO DE ÁGUA (RECURSOS) -->
+            <section id="view-consumo" class="view-page hidden p-6 max-w-7xl mx-auto space-y-6">
+                <div>
+                    <h1 class="text-2xl font-bold text-slate-900 dark:text-white">Gestão do Consumo de Água</h1>
+                    <p class="text-slate-500 dark:text-slate-400 text-sm">Análise detalhada de eficiência hídrica e comparativo sustentável.</p>
+                </div>
+
+                <!-- Cards explicativos de Impacto -->
+                <div class="grid md:grid-cols-3 gap-6">
+                    <div class="bg-gradient-to-br from-water-500 to-water-600 text-white p-6 rounded-3xl shadow-lg">
+                        <i data-lucide="droplet" class="w-8 h-8 opacity-80 mb-4"></i>
+                        <h3 class="text-lg font-bold">Consumo Mês Atual</h3>
+                        <p class="text-3xl font-black mt-2">340 Litros</p>
+                        <p class="text-xs text-water-100 mt-1">Sua horta está operando no limite ideal de recirculação.</p>
+                    </div>
+                    <div class="bg-gradient-to-br from-hydro-600 to-hydro-700 text-white p-6 rounded-3xl shadow-lg">
+                        <i data-lucide="leaf" class="w-8 h-8 opacity-80 mb-4"></i>
+                        <h3 class="text-lg font-bold">Água Economizada</h3>
+                        <p class="text-3xl font-black mt-2">3.800 Litros</p>
+                        <p class="text-xs text-hydro-100 mt-1">Em comparação ao cultivo direto no solo tradicional.</p>
+                    </div>
+                    <div class="bg-gradient-to-br from-emerald-600 to-teal-700 text-white p-6 rounded-3xl shadow-lg">
+                        <i data-lucide="award" class="w-8 h-8 opacity-80 mb-4"></i>
+                        <h3 class="text-lg font-bold">Índice de Sustentabilidade</h3>
+                        <p class="text-3xl font-black mt-2">91.8%</p>
+                        <p class="text-xs text-emerald-100 mt-1">Eficiência de reaproveitamento do reservatório.</p>
+                    </div>
+                </div>
+
+                <!-- Gráfico Consumo Longo Prazo -->
+                <div class="bg-white dark:bg-darkbg-800 p-6 rounded-3xl border border-slate-200/80 dark:border-slate-700/80 shadow-sm space-y-4">
+                    <h3 class="font-bold text-slate-800 dark:text-white">Comparativo: Cultivo Hidropônico vs Agricultura Tradicional (Litros)</h3>
+                    <div class="h-80 relative">
+                        <canvas id="chart-consumo-comparativo"></canvas>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 9. PERFIL DO USUÁRIO -->
+            <section id="view-perfil" class="view-page hidden p-6 max-w-4xl mx-auto space-y-6">
+                <div>
+                    <h1 class="text-2xl font-bold text-slate-900 dark:text-white">Perfil do Usuário</h1>
+                    <p class="text-slate-500 dark:text-slate-400 text-sm">Personalize suas informações e foto de perfil.</p>
+                </div>
+
+                <div class="bg-white dark:bg-darkbg-800 rounded-3xl border border-slate-200/80 dark:border-slate-700/80 shadow-sm p-8 space-y-6">
+                    <div class="flex flex-col sm:flex-row items-center gap-6 pb-6 border-b border-slate-100 dark:border-slate-700">
+                        <img id="profile-avatar-preview" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=256" alt="Foto Perfil" class="w-24 h-24 rounded-full object-cover ring-4 ring-hydro-400">
+                        <div class="space-y-2 text-center sm:text-left">
+                            <h3 class="text-lg font-bold text-slate-800 dark:text-white">Foto de Perfil</h3>
+                            <input type="text" id="profile-avatar-url" placeholder="URL da imagem de perfil" class="w-full sm:w-80 px-3 py-2 text-xs bg-slate-50 dark:bg-darkbg-900 border border-slate-200 dark:border-slate-700 rounded-xl dark:text-white" onchange="updateProfileAvatarPreview(this.value)">
+                            <p class="text-xs text-slate-400">Cole a URL de uma foto para atualizar seu avatar.</p>
+                        </div>
+                    </div>
+
+                    <form onsubmit="handleSaveProfile(event)" class="space-y-4">
+                        <div class="grid sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">Nome Completo</label>
+                                <input type="text" id="profile-name" required class="w-full px-4 py-2.5 bg-slate-50 dark:bg-darkbg-900 border border-slate-200 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-hydro-500 dark:text-white">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">E-mail</label>
+                                <input type="email" id="profile-email" required class="w-full px-4 py-2.5 bg-slate-50 dark:bg-darkbg-900 border border-slate-200 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-hydro-500 dark:text-white">
+                            </div>
+                        </div>
+
+                        <div class="pt-4 border-t border-slate-100 dark:border-slate-700">
+                            <h4 class="text-sm font-bold text-slate-800 dark:text-white mb-3">Alterar Senha</h4>
+                            <div class="grid sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">Nova Senha</label>
+                                    <input type="password" placeholder="••••••••" class="w-full px-4 py-2.5 bg-slate-50 dark:bg-darkbg-900 border border-slate-200 dark:border-slate-700 rounded-xl text-sm dark:text-white">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">Confirmar Nova Senha</label>
+                                    <input type="password" placeholder="••••••••" class="w-full px-4 py-2.5 bg-slate-50 dark:bg-darkbg-900 border border-slate-200 dark:border-slate-700 rounded-xl text-sm dark:text-white">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="pt-4 flex justify-end">
+                            <button type="submit" class="px-6 py-3 bg-hydro-500 hover:bg-hydro-600 text-white font-bold rounded-xl shadow-md transition-all text-sm">
+                                Salvar Alterações
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </section>
+
+            <!-- 10. CONFIGURAÇÕES -->
+            <section id="view-configuracoes" class="view-page hidden p-6 max-w-4xl mx-auto space-y-6">
+                <div>
+                    <h1 class="text-2xl font-bold text-slate-900 dark:text-white">Configurações do Sistema</h1>
+                    <p class="text-slate-500 dark:text-slate-400 text-sm">Ajuste preferências globais, tema visual e parâmetros do sistema.</p>
+                </div>
+
+                <div class="bg-white dark:bg-darkbg-800 rounded-3xl border border-slate-200/80 dark:border-slate-700/80 shadow-sm p-8 space-y-6">
+                    
+                    <!-- Opção de Aparência e Modo Escuro -->
+                    <div class="space-y-4">
+                        <h3 class="text-sm font-bold uppercase tracking-wider text-slate-400">Aparência do Sistema</h3>
+                        
+                        <div class="flex items-center justify-between py-3 border-b border-slate-100 dark:border-slate-700">
+                            <div>
+                                <p class="text-sm font-semibold text-slate-800 dark:text-white">Modo de Apresentação Visual</p>
+                                <p class="text-xs text-slate-500 dark:text-slate-400">Escolha o tema que melhor se adapta ao seu ambiente de trabalho.</p>
+                            </div>
+                            <div class="flex bg-slate-100 dark:bg-darkbg-900 p-1 rounded-xl border border-slate-200 dark:border-slate-700">
+                                <button onclick="setTheme('light')" id="theme-btn-light" class="px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5">
+                                    <i data-lucide="sun" class="w-4 h-4"></i> Claro
+                                </button>
+                                <button onclick="setTheme('dark')" id="theme-btn-dark" class="px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5">
+                                    <i data-lucide="moon" class="w-4 h-4"></i> Escuro
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-4 pt-2">
+                        <h3 class="text-sm font-bold uppercase tracking-wider text-slate-400">Preferências de Notificação</h3>
+                        
+                        <div class="flex items-center justify-between py-2 border-b border-slate-100 dark:border-slate-700">
+                            <div>
+                                <p class="text-sm font-semibold text-slate-800 dark:text-white">Alertas em Alerta (Vermelho)</p>
+                                <p class="text-xs text-slate-500 dark:text-slate-400">Receber notificações urgentes quando uma planta entrar em estado crítico.</p>
+                            </div>
+                            <input type="checkbox" checked class="w-5 h-5 accent-hydro-500">
+                        </div>
+
+                        <div class="flex items-center justify-between py-2 border-b border-slate-100 dark:border-slate-700">
+                            <div>
+                                <p class="text-sm font-semibold text-slate-800 dark:text-white">Alertas de Atenção (Amarelo)</p>
+                                <p class="text-xs text-slate-500 dark:text-slate-400">Avisar preventivamente quando parâmetros começarem a variar.</p>
+                            </div>
+                            <input type="checkbox" checked class="w-5 h-5 accent-hydro-500">
+                        </div>
+                    </div>
+
+                    <div class="space-y-4 pt-2">
+                        <h3 class="text-sm font-bold uppercase tracking-wider text-slate-400">Integrações de Hardware / Sensores</h3>
+                        <div class="flex items-center justify-between py-2 border-b border-slate-100 dark:border-slate-700">
+                            <div>
+                                <p class="text-sm font-semibold text-slate-800 dark:text-white">Simulador de Telemetria IoT</p>
+                                <p class="text-xs text-slate-500 dark:text-slate-400">Atualiza automaticamente os dados dos sensores a cada 4 segundos.</p>
+                            </div>
+                            <input type="checkbox" id="toggle-simulador" checked onchange="toggleSimulador(this.checked)" class="w-5 h-5 accent-hydro-500">
+                        </div>
+                    </div>
+
+                    <div class="pt-4 flex justify-end">
+                        <button onclick="alert('Configurações salvas com sucesso!')" class="px-6 py-3 bg-hydro-500 hover:bg-hydro-600 text-white font-bold rounded-xl shadow-md transition-all text-sm">
+                            Salvar Configurações
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- MODAL CADASTRO NOVA PLANTA -->
+    <div id="modal-planta" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-darkbg-800 rounded-3xl max-w-md w-full p-6 shadow-2xl border border-slate-100 dark:border-slate-700">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-bold text-slate-800 dark:text-white">Cadastrar Nova Planta</h3>
+                <button onclick="closeModalNovaPlanta()" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"><i data-lucide="x"></i></button>
+            </div>
+            <form onsubmit="handleAddPlanta(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">Nome da Planta</label>
+                    <input type="text" id="new-plant-name" required placeholder="Ex: Manjericão Roxo" class="w-full px-4 py-2.5 bg-slate-50 dark:bg-darkbg-900 border border-slate-200 dark:border-slate-700 rounded-xl text-sm dark:text-white">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">Bancada / Local</label>
+                    <input type="text" id="new-plant-location" required placeholder="Ex: Bancada A2" class="w-full px-4 py-2.5 bg-slate-50 dark:bg-darkbg-900 border border-slate-200 dark:border-slate-700 rounded-xl text-sm dark:text-white">
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">Temp. Ideal (°C)</label>
+                        <input type="number" id="new-plant-temp" value="22" required class="w-full px-4 py-2.5 bg-slate-50 dark:bg-darkbg-900 border border-slate-200 dark:border-slate-700 rounded-xl text-sm dark:text-white">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">Nutrientes (PPM)</label>
+                        <input type="number" id="new-plant-nutri" value="800" required class="w-full px-4 py-2.5 bg-slate-50 dark:bg-darkbg-900 border border-slate-200 dark:border-slate-700 rounded-xl text-sm dark:text-white">
+                    </div>
+                </div>
+                <div class="pt-4 flex justify-end gap-2">
+                    <button type="button" onclick="closeModalNovaPlanta()" class="px-4 py-2 text-sm text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-xl">Cancelar</button>
+                    <button type="submit" class="px-5 py-2 text-sm bg-hydro-500 text-white font-bold rounded-xl shadow-md">Salvar Planta</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT / LÓGICA DA APLICAÇÃO -->
+    <script src="script.js"></script>
+</body>
+</html>
