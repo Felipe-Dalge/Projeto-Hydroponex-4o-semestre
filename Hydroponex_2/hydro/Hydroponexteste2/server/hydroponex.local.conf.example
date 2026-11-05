@@ -1,0 +1,11 @@
+# Copie para C:/xampp/apache/conf/extra/hydroponex-local.conf; fora de htdocs.
+<Directory "C:/xampp/htdocs/hydroponex">
+    AllowOverride All
+    Require local
+    SetEnv HYDROPONEX_DB_HOST "127.0.0.1"
+    SetEnv HYDROPONEX_DB_PORT "3306"
+    SetEnv HYDROPONEX_DB_NAME "hydroponex"
+    SetEnv HYDROPONEX_DB_USER "hydroponex_app"
+    SetEnv HYDROPONEX_DB_PASSWORD "SUBSTITUA_POR_SENHA_FORTE"
+    SetEnv HYDROPONEX_AUTH_KEY "SUBSTITUA_POR_64_HEXADECIMAIS"
+</Directory>

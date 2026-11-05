@@ -1,0 +1,20 @@
+# Segredos e configurações locais (o módulo usa variáveis do processo).
+.env
+.env.*
+!.env.example
+*.local.ini
+*.local.php
+*.local.json
+*.local.ps1
+
+# Dados operacionais gerados pelo armazenamento atual.
+**/php/storage/.lock
+**/php/storage/plantas_*
+**/php/storage/usuarios/
+
+# Instalador e distribuição
+/dist/
+*.local.conf
+*.log
+__pycache__/
+*.pyc
