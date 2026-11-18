@@ -5,6 +5,6 @@ Options -Indexes
 <IfModule mod_rewrite.c>
 RewriteEngine On
 RewriteRule (^|/)\. - [F,L]
-RewriteRule ^(database|scripts|server|backups|dist)(/|$) - [F,L,NC]
+RewriteRule ^(database|docs|scripts|tests|server|backups|dist|vendor)(/|$) - [F,L,NC]
 RewriteRule ^php/(storage|config|services)(/|$) - [F,L,NC]
 </IfModule>

@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="referrer" content="no-referrer">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self'; connect-src 'self'; base-uri 'none'; form-action 'none'">
+    <title>Convite de equipe · Hydroponex</title>
+    <link rel="stylesheet" href="assets/css/convite.css">
+    <script src="assets/js/convite.js" defer></script>
+</head>
+<body>
+    <main>
+        <a class="brand" href="./"><img src="assets/images/ImagemLogoSite.png" alt="" width="36" height="36">Hydroponex</a>
+        <h1>Convite de equipe</h1>
+        <p id="invite-status" role="status">Carregando convite…</p>
+        <form id="invite-login" hidden>
+            <label>E-mail<input type="email" name="email" maxlength="254" autocomplete="username" required></label>
+            <label>Senha<input type="password" name="senha" maxlength="72" autocomplete="current-password" required></label>
+            <div class="actions">
+                <button type="submit">Entrar</button>
+                <button type="button" class="secondary" id="show-register">Criar conta</button>
+            </div>
+        </form>
+        <form id="invite-register" hidden>
+            <label>Nome<input name="nome" maxlength="100" autocomplete="name" required></label>
+            <label>E-mail<input type="email" name="email" maxlength="254" autocomplete="username" required></label>
+            <label>Senha<input type="password" name="senha" minlength="12" maxlength="72" autocomplete="new-password" required></label>
+            <div class="actions">
+                <button type="submit">Cadastrar como agricultor</button>
+                <button type="button" class="secondary" id="show-login">Já tenho conta</button>
+            </div>
+        </form>
+        <section id="invite-offer" hidden aria-labelledby="offer-title">
+            <h2 id="offer-title">Hortas oferecidas</h2>
+            <ul id="invite-offer-gardens"></ul>
+            <p>Ao aceitar, você confirma o e-mail da conta e recebe acesso como agricultor às hortas listadas.</p>
+            <div class="actions">
+                <button type="button" id="invite-accept">Aceitar convite</button>
+                <button type="button" class="secondary" id="invite-decline">Recusar convite</button>
+            </div>
+        </section>
+        <div class="actions">
+            <button type="button" class="secondary" id="invite-switch-account" hidden>Entrar com outra conta</button>
+            <a href="./#hortas" id="invite-done" hidden>Ir para minhas hortas</a>
+        </div>
+    </main>
+</body>
+</html>

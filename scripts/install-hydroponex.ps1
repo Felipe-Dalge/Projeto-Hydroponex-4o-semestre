@@ -41,7 +41,7 @@ try {
     $XamppPath=(Resolve-Path -LiteralPath $XamppPath).Path
     $php=Join-Path $XamppPath 'php/php.exe';$apache=Join-Path $XamppPath 'apache/bin/httpd.exe';$maria=Join-Path $XamppPath 'mysql/bin/mysqld.exe'
     foreach($exe in @($php,$apache,$maria)){if(!(Test-Path -LiteralPath $exe)){throw "Componente do XAMPP ausente: $exe"}}
-    $app=Join-Path $repo 'Hydroponex_2/hydro/Hydroponexteste2';if(!(Test-Path -LiteralPath "$app/index.html")){throw 'Pasta da aplicação não encontrada no repositório.'}
+    $app=Join-Path $repo 'public';if(!(Test-Path -LiteralPath "$app/index.html")){throw 'Pasta da aplicação não encontrada no repositório.'}
     $requirements=& $php (Join-Path $PSScriptRoot 'check-environment.php')
     if($LASTEXITCODE -ne 0 -or $requirements -ne 'OK'){throw 'Habilite PHP >=8.1, pdo_mysql, session e json no XAMPP.'}
     $httpConfig=Join-Path $XamppPath 'apache/conf/httpd.conf';$original=[IO.File]::ReadAllText($httpConfig)
@@ -104,9 +104,9 @@ try {
     } elseif((Invoke-Apache '-t') -ne 0) { throw 'Configuração Apache existente inválida. Nenhuma configuração global foi alterada.' }
     # Diagnóstico CLI usa exatamente a configuração privada que será lida pelo Apache.
     foreach($key in @('HYDROPONEX_DB_HOST','HYDROPONEX_DB_PORT','HYDROPONEX_DB_NAME','HYDROPONEX_DB_USER','HYDROPONEX_DB_PASSWORD','HYDROPONEX_AUTH_KEY')){[Environment]::SetEnvironmentVariable($key,[string]$result.settings.$key,'Process')}
-    & $php (Join-Path $repo 'database/diagnostico_mariadb.php') --schema
+    & $php (Join-Path $repo 'scripts/diagnostico_mariadb.php') --schema
     if($LASTEXITCODE -ne 0){throw 'Diagnóstico CLI falhou; instalação incompleta.'}
-    $integrity=& $php (Join-Path $repo 'database/tests/integridade.php')
+    $integrity=& $php (Join-Path $repo 'tests/integridade.php')
     if($LASTEXITCODE -ne 0){throw 'Integridade referencial/CHECK falhou. Instalação incompleta; testes revertidos.'}
     $integrity | Select-Object -Last 1
     if(Tcp-Open $HttpPort){if($ConfigureApache -and (Invoke-Apache '-k restart') -ne 0){$null=Read-Host 'Configuração validada. Pare e inicie Apache no XAMPP Control Panel, depois pressione Enter'}}else{Start-Process -FilePath $apache -ArgumentList @("-f", "`"$httpConfig`"") -WorkingDirectory (Split-Path $apache) -WindowStyle Hidden}

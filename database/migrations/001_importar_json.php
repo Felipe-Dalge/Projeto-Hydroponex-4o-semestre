@@ -6,14 +6,14 @@ if (PHP_SAPI !== 'cli') {
     http_response_code(404);
     exit;
 }
-require_once dirname(__DIR__, 2) . '/Hydroponex_2/hydro/Hydroponexteste2/php/config/database.php';
-require_once dirname(__DIR__, 2) . '/Hydroponex_2/hydro/Hydroponexteste2/php/services/plant_fields.php';
+require_once dirname(__DIR__, 2) . '/public/php/config/database.php';
+require_once dirname(__DIR__, 2) . '/public/php/services/plant_fields.php';
 
 $options = getopt('', ['arquivo:', 'horta:', 'aplicar']);
 $pdo = null;
 $locked = false;
 try {
-    $file = $options['arquivo'] ?? dirname(__DIR__, 2) . '/Hydroponex_2/hydro/Hydroponexteste2/php/storage/plantas.json';
+    $file = $options['arquivo'] ?? dirname(__DIR__, 2) . '/public/php/storage/plantas.json';
     $horta = filter_var($options['horta'] ?? null, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1, 'max_range' => 4294967295]]);
     if ($horta === false) throw new RuntimeException('Informe --horta=ID de uma horta já cadastrada.');
     $raw = file_get_contents($file);

@@ -2,7 +2,7 @@
 declare(strict_types=1);
 if(PHP_SAPI!=='cli'){http_response_code(404);exit;}
 ini_set('display_errors','0');
-require_once __DIR__.'/../Hydroponex_2/hydro/Hydroponexteste2/php/config/database.php';
+require_once __DIR__.'/../public/php/config/database.php';
 function install_sql(string $sql): array {
     $out=[];$part='';$quote=null;$n=strlen($sql);
     for($i=0;$i<$n;$i++) {
@@ -17,10 +17,10 @@ function install_sql(string $sql): array {
 }
 function install_validate(PDO $p,string $schema): void {
     preg_match_all('/CREATE TABLE ([a-z_]+)/',$schema,$tables);$actual=$p->query('SHOW TABLES')->fetchAll(PDO::FETCH_COLUMN);sort($actual);$expected=$tables[1];sort($expected);
-    if($actual!==$expected||!$p->query("SELECT 1 FROM schema_version WHERE versao='1.3.0'")->fetchColumn())throw new RuntimeException('Banco incompatível ou importação parcial. Preserve-o, faça backup e consulte MIGRACAO_MARIADB.md.');
+    if($actual!==$expected||!$p->query("SELECT 1 FROM schema_version WHERE versao='1.7.0'")->fetchColumn())throw new RuntimeException('Banco incompatível ou importação parcial. Preserve-o, faça backup e consulte MIGRACAO_MARIADB.md.');
     preg_match_all('/CONSTRAINT ([a-z_]+) /',$schema,$constraints);$names=$p->query('SELECT constraint_name FROM information_schema.table_constraints WHERE constraint_schema=DATABASE()')->fetchAll(PDO::FETCH_COLUMN);
     foreach($constraints[1] as $name)if(!in_array($name,$names,true))throw new RuntimeException('Restrição obrigatória ausente. Faça backup e revise o esquema.');
-    if((int)$p->query("SELECT COUNT(*) FROM information_schema.tables WHERE table_schema=DATABASE() AND engine='InnoDB' AND table_collation='utf8mb4_unicode_ci'")->fetchColumn()!==21)throw new RuntimeException('Engine/collation incompatível.');
+    if((int)$p->query("SELECT COUNT(*) FROM information_schema.tables WHERE table_schema=DATABASE() AND engine='InnoDB' AND table_collation='utf8mb4_unicode_ci'")->fetchColumn()!==28)throw new RuntimeException('Engine/collation incompatível.');
     $refs=$p->query('SELECT table_name,column_name,referenced_table_name,referenced_column_name,constraint_name FROM information_schema.key_column_usage WHERE table_schema=DATABASE() AND referenced_table_name IS NOT NULL ORDER BY constraint_name,ordinal_position')->fetchAll();$groups=[];
     foreach($refs as $r)$groups[$r['constraint_name']][]=$r;
     $q=static fn($v)=>'`'.str_replace('`','``',$v).'`';

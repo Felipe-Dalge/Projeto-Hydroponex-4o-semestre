@@ -1,0 +1,25 @@
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 4px; }
+        .dark .custom-scrollbar::-webkit-scrollbar-thumb { background: #475569; }
+
+        /* OTIMIZAÇÃO TROCA DE TEMA: enquanto esta classe está no <html>, todas as
+           transições da página são desligadas. Isso evita que o navegador tente
+           animar (300ms) centenas de elementos com "transition-colors/all" ao
+           mesmo tempo quando a classe .dark é alternada — que é o que causava a
+           travada. Não altera nenhuma classe/estilo existente, apenas suspende
+           a ANIMAÇÃO da transição por uma fração de segundo durante a troca. */
+        .theme-switching, .theme-switching * {
+            transition: none !important;
+        }
+        .op-button { min-height: 44px; min-width: 44px; padding: .65rem .9rem; }
+        .op-input { min-height: 44px; padding: .65rem; border: 1px solid #94a3b8; border-radius: .65rem; background: transparent; color: inherit; }
+        .op-card { min-width: 0; overflow-wrap: anywhere; border: 1px solid #cbd5e1; border-radius: 1rem; padding: 1rem; background: white; }
+        .dark .op-card { background: #1e293b; border-color: #475569; }
+        .op-card p { margin-top: .5rem; }
+        .op-button:disabled { opacity: .5; cursor: not-allowed; }
+        #op-detail { overflow-wrap: anywhere; }
+        #view-operacao [hidden], #op-detail [hidden] { display: none; }
+        #task-dialog { overflow-wrap: anywhere; }
+        #task-dialog [hidden] { display: none; }
+        #task-description p, #task-work-list p { white-space: pre-wrap; }

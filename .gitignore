@@ -14,7 +14,15 @@
 
 # Instalador e distribuição
 /dist/
+*.zip
 *.local.conf
+hydroponex-local.conf
+hydroponex-installer.conf
+hydroponex-private/
+*.bak
+*.tmp
 *.log
 __pycache__/
+.pytest_cache/
 *.pyc
+/vendor/

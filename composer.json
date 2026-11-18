@@ -1,0 +1,12 @@
+{
+    "name": "hydroponex/hydroponex",
+    "description": "Gerenciamento de hortas hidropônicas",
+    "require": {
+        "php": ">=8.1",
+        "phpmailer/phpmailer": "^7.0"
+    },
+    "config": {
+        "sort-packages": true,
+        "platform": {"php": "8.1.0"}
+    }
+}

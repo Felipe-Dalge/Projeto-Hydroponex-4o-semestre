@@ -1,7 +1,7 @@
 -- Consultas somente leitura; executar no banco selecionado no phpMyAdmin.
 SELECT VERSION() AS versao_servidor, DATABASE() AS banco_selecionado;
 SELECT * FROM schema_version;
--- Esperado: 21 tabelas base, todas InnoDB/utf8mb4_unicode_ci; schema 1.3.0.
+-- Esperado: 28 tabelas base, todas InnoDB/utf8mb4_unicode_ci; schema 1.7.0.
 SELECT table_name, engine, table_collation FROM information_schema.tables
  WHERE table_schema=DATABASE() AND table_type='BASE TABLE' ORDER BY table_name;
 SELECT table_name, constraint_name, constraint_type FROM information_schema.table_constraints

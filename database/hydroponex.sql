@@ -45,6 +45,7 @@ CREATE TABLE usuario (
     senha_hash VARCHAR(255) CHARACTER SET ascii COLLATE ascii_bin NULL,
     tipo VARCHAR(50) NULL COMMENT 'Descrição legada; não concede permissões',
     ativo BOOLEAN NOT NULL DEFAULT FALSE,
+    perfil_entrada VARCHAR(16) CHARACTER SET ascii COLLATE ascii_bin NOT NULL DEFAULT 'administrador',
     auth_versao INT UNSIGNED NOT NULL DEFAULT 1,
     excluido_em DATETIME(6) NULL,
     email_verificado_em DATETIME(6) NULL,
@@ -56,6 +57,7 @@ CREATE TABLE usuario (
     atualizado_em DATETIME(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
     UNIQUE KEY uq_usuario_email (email),
     KEY ix_usuario_cep (id_cep),
+    CONSTRAINT ck_usuario_perfil_entrada CHECK (perfil_entrada IN ('administrador','agricultor')),
     CONSTRAINT ck_usuario_ativo CHECK (ativo IN (0,1)),
     CONSTRAINT ck_usuario_credencial CHECK (ativo = 0 OR senha_hash IS NOT NULL),
     CONSTRAINT ck_usuario_hash CHECK (senha_hash IS NULL OR senha_hash LIKE '$2y$%' OR senha_hash LIKE '$argon2id$%'),
@@ -99,7 +101,7 @@ CREATE TABLE usuario_horta (
     criado_em DATETIME(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
     PRIMARY KEY (id_usuario, id_horta),
     KEY ix_usuario_horta_horta_papel (id_horta, papel),
-    CONSTRAINT ck_usuario_horta_papel CHECK (papel IN ('proprietario','gestor','leitor')),
+    CONSTRAINT ck_usuario_horta_papel CHECK (papel IN ('proprietario','gestor','agricultor','leitor')),
     CONSTRAINT fk_uh_usuario FOREIGN KEY (id_usuario) REFERENCES usuario (id_usuario) ON DELETE RESTRICT ON UPDATE RESTRICT,
     CONSTRAINT fk_uh_horta FOREIGN KEY (id_horta) REFERENCES horta (id_horta) ON DELETE RESTRICT ON UPDATE RESTRICT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -277,6 +279,7 @@ CREATE TABLE monitoramento_sensor (
     unidade VARCHAR(20) NOT NULL COMMENT 'Snapshot da unidade na coleta',
     limite_min DECIMAL(20,6) NULL,
     limite_max DECIMAL(20,6) NULL,
+    UNIQUE KEY uq_leitura_horta (id_leitura,id_horta),
     CONSTRAINT ck_leitura_limites CHECK (limite_min IS NULL OR limite_max IS NULL OR limite_min<=limite_max),
     KEY ix_leitura_horta_sensor (id_horta,id_sensor,id_monitoramento),
     UNIQUE KEY uq_leitura_monitoramento_sensor (id_monitoramento, id_sensor),
@@ -317,4 +320,145 @@ CREATE TABLE auth_limite (
     KEY ix_auth_limite_janela (janela_em)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-INSERT INTO schema_version (versao) VALUES ('1.0.0'), ('1.1.0'), ('1.2.0'), ('1.3.0');
+CREATE TABLE horta_convite (
+    id_convite INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    id_horta INT UNSIGNED NOT NULL,
+    id_criador INT UNSIGNED NOT NULL,
+    email VARCHAR(254) NOT NULL,
+    papel VARCHAR(15) NOT NULL,
+    codigo_hash BINARY(32) NOT NULL UNIQUE,
+    criado_em DATETIME(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+    expira_em DATETIME(6) NOT NULL,
+    aceito_em DATETIME(6) NULL,
+    revogado_em DATETIME(6) NULL,
+    INDEX ix_convite_horta (id_horta, id_convite),
+    CONSTRAINT ck_convite_papel CHECK (papel IN ('gestor','agricultor','leitor')),
+    CONSTRAINT fk_convite_horta FOREIGN KEY (id_horta) REFERENCES horta(id_horta),
+    CONSTRAINT fk_convite_criador FOREIGN KEY (id_criador) REFERENCES usuario(id_usuario)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+CREATE TABLE horta_tarefa (
+    id_tarefa INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    id_planta INT UNSIGNED NULL,
+    concluida_em DATETIME(6) NULL,
+    id_horta INT UNSIGNED NOT NULL,
+    id_criador INT UNSIGNED NOT NULL,
+    id_responsavel INT UNSIGNED NULL,
+    prioridade VARCHAR(10) NOT NULL DEFAULT 'media',
+    prazo_em DATETIME(6) NULL,
+    versao INT UNSIGNED NOT NULL DEFAULT 1,
+    problema VARCHAR(1000) NULL,
+    origem_problema VARCHAR(20) NOT NULL DEFAULT 'manual',
+    id_leitura BIGINT UNSIGNED NULL,
+    problema_hash BINARY(32) NULL,
+    criacao_hash BINARY(32) NULL UNIQUE,
+    conteudo_hash BINARY(32) NULL,
+    UNIQUE KEY uq_tarefa_horta (id_tarefa,id_horta),
+    INDEX ix_tarefa_horta_estado (id_horta,estado,prioridade,prazo_em),
+    INDEX ix_tarefa_problema (id_horta,problema_hash,estado),
+    INDEX ix_tarefa_leitura (id_leitura,id_horta),
+    CONSTRAINT ck_tarefa_prioridade CHECK (prioridade IN ('baixa','media','alta','critica')),
+    CONSTRAINT ck_tarefa_origem CHECK (origem_problema IN ('manual','estado_planta','leitura')),
+    CONSTRAINT fk_tarefa_leitura FOREIGN KEY (id_leitura,id_horta) REFERENCES monitoramento_sensor(id_leitura,id_horta) ON DELETE RESTRICT ON UPDATE RESTRICT,
+    titulo VARCHAR(160) NOT NULL,
+    descricao VARCHAR(1000) NULL,
+    estado VARCHAR(20) NOT NULL DEFAULT 'pendente',
+    criado_em DATETIME(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+    atualizado_em DATETIME(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
+    INDEX ix_tarefa_horta_responsavel (id_horta, id_responsavel, id_tarefa),
+    INDEX ix_tarefa_planta_horta (id_planta,id_horta),
+    CONSTRAINT fk_tarefa_planta_horta FOREIGN KEY (id_planta,id_horta) REFERENCES planta(id_planta,id_horta) ON DELETE RESTRICT ON UPDATE RESTRICT,
+    CONSTRAINT ck_tarefa_estado CHECK (estado IN ('pendente','em_andamento','em_verificacao','concluida','cancelada')),
+    CONSTRAINT fk_tarefa_horta FOREIGN KEY (id_horta) REFERENCES horta(id_horta),
+    CONSTRAINT fk_tarefa_criador FOREIGN KEY (id_criador) REFERENCES usuario(id_usuario),
+    CONSTRAINT fk_tarefa_responsavel FOREIGN KEY (id_responsavel) REFERENCES usuario(id_usuario)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+CREATE TABLE horta_registro (
+    id_registro INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    id_planta INT UNSIGNED NULL,
+    id_horta INT UNSIGNED NOT NULL,
+    id_autor INT UNSIGNED NOT NULL,
+    tipo VARCHAR(16) NOT NULL,
+    descricao VARCHAR(1000) NOT NULL,
+    criado_em DATETIME(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+    INDEX ix_registro_horta (id_horta, id_registro),
+    INDEX ix_registro_planta_horta (id_planta,id_horta),
+    CONSTRAINT fk_registro_planta_horta FOREIGN KEY (id_planta,id_horta) REFERENCES planta(id_planta,id_horta) ON DELETE RESTRICT ON UPDATE RESTRICT,
+    CONSTRAINT ck_registro_tipo CHECK (tipo IN ('observacao','intervencao')),
+    CONSTRAINT fk_registro_horta FOREIGN KEY (id_horta) REFERENCES horta(id_horta),
+    CONSTRAINT fk_registro_autor FOREIGN KEY (id_autor) REFERENCES usuario(id_usuario)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+INSERT INTO schema_version (versao) VALUES ('1.0.0'), ('1.1.0'), ('1.2.0'), ('1.3.0'), ('1.4.0');
+
+CREATE TABLE equipe_convite (
+    id_convite INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    id_emissor INT UNSIGNED NOT NULL,
+    papel VARCHAR(15) NOT NULL DEFAULT 'agricultor',
+    email VARCHAR(254) NOT NULL,
+    codigo_hash BINARY(32) NOT NULL UNIQUE,
+    criado_em DATETIME(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+    expira_em DATETIME(6) NOT NULL,
+    tentativa_em DATETIME(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+    enviado_em DATETIME(6) NULL,
+    falhou_em DATETIME(6) NULL,
+    aceito_em DATETIME(6) NULL,
+    recusado_em DATETIME(6) NULL,
+    cancelado_em DATETIME(6) NULL,
+    INDEX ix_equipe_convite_emissor (id_emissor, id_convite),
+    INDEX ix_equipe_convite_email (email, expira_em),
+    CONSTRAINT fk_equipe_convite_emissor FOREIGN KEY (id_emissor) REFERENCES usuario(id_usuario),
+    CONSTRAINT ck_equipe_convite_papel CHECK (papel='agricultor'),
+    CONSTRAINT ck_equipe_convite_decisao CHECK (
+        (aceito_em IS NOT NULL) + (recusado_em IS NOT NULL) + (cancelado_em IS NOT NULL) <= 1
+    )
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- O papel desta modalidade é agricultor. Uma referência apagada invalida o lote inteiro.
+CREATE TABLE equipe_convite_horta (
+    id_alvo INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    id_convite INT UNSIGNED NOT NULL,
+    id_horta INT UNSIGNED NULL,
+    UNIQUE KEY uq_equipe_convite_horta (id_convite, id_horta),
+    INDEX ix_equipe_horta_convite (id_horta, id_convite),
+    CONSTRAINT fk_equipe_alvo_convite FOREIGN KEY (id_convite) REFERENCES equipe_convite(id_convite),
+    CONSTRAINT fk_equipe_alvo_horta FOREIGN KEY (id_horta) REFERENCES horta(id_horta) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+INSERT INTO schema_version (versao) VALUES ('1.5.0');
+
+INSERT INTO schema_version (versao) VALUES ('1.6.0');
+
+CREATE TABLE tarefa_historico (
+    id_evento BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    id_tarefa INT UNSIGNED NOT NULL,
+    id_horta INT UNSIGNED NOT NULL,
+    id_autor INT UNSIGNED NULL,
+    evento VARCHAR(20) NOT NULL,
+    detalhes JSON NOT NULL,
+    criado_em DATETIME(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+    INDEX ix_historico_tarefa (id_tarefa,id_horta,id_evento),
+    CONSTRAINT ck_historico_autor CHECK (id_autor IS NOT NULL OR evento='migracao'),
+    CONSTRAINT fk_historico_tarefa FOREIGN KEY (id_tarefa,id_horta) REFERENCES horta_tarefa(id_tarefa,id_horta) ON DELETE RESTRICT ON UPDATE RESTRICT,
+    CONSTRAINT fk_historico_autor FOREIGN KEY (id_autor) REFERENCES usuario(id_usuario) ON DELETE RESTRICT ON UPDATE RESTRICT
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+CREATE TABLE tarefa_intervencao (
+    id_intervencao BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    id_tarefa INT UNSIGNED NOT NULL,
+    id_horta INT UNSIGNED NOT NULL,
+    id_autor INT UNSIGNED NOT NULL,
+    tipo VARCHAR(15) NOT NULL,
+    descricao VARCHAR(2000) NOT NULL,
+    observacoes VARCHAR(1000) NULL,
+    realizada_em DATETIME(6) NOT NULL,
+    registrado_em DATETIME(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+    INDEX ix_intervencao_tarefa (id_tarefa,id_horta,id_intervencao),
+    CONSTRAINT ck_intervencao_tipo CHECK (tipo IN ('observacao','intervencao')),
+    CONSTRAINT fk_intervencao_tarefa FOREIGN KEY (id_tarefa,id_horta) REFERENCES horta_tarefa(id_tarefa,id_horta) ON DELETE RESTRICT ON UPDATE RESTRICT,
+    CONSTRAINT fk_intervencao_autor FOREIGN KEY (id_autor) REFERENCES usuario(id_usuario) ON DELETE RESTRICT ON UPDATE RESTRICT
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+
+INSERT INTO schema_version (versao) VALUES ('1.7.0');
