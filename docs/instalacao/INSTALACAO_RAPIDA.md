@@ -36,6 +36,10 @@ Guarde backup da pasta privada, especialmente a chave HMAC. Nunca a envie ao Git
 
 ## Quando houver erro
 
+Para atualizar uma instalação existente, exporte primeiro a estrutura e os dados no phpMyAdmin e faça cópia da pasta privada. Confira `schema_version` e siga as migrações antes de executar o assistente. A base atual é 1.7.0. Bancos 1.6.0 precisam somente da migração 008. [Sequência de migrações](../banco-de-dados/MIGRACAO_MARIADB.md)
+
+Para convites por e-mail, execute `composer install --no-dev` na pasta do clone e configure o SMTP no ambiente do Apache. O instalador publica somente `public/`, por isso o autoloader da publicação precisa ser indicado por `HYDROPONEX_MAIL_AUTOLOAD`. [Configurar o envio e testar com Mailpit](CONVITES_SMTP.md)
+
 - Senha administrativa incorreta: execute de novo com a senha correta. Ela não é salva nem enviada como argumento de processo.
 - Conta hydroponex_app existente: informe sua senha; não apague a conta para contornar erro 1396. Privilégios adicionais impedem concluir: revise-os com o administrador, sem revogar privilégios de outros projetos automaticamente.
 - Banco incompatível ou importação parcial: o instalador para. Faça backup e siga o [guia de migração](../banco-de-dados/MIGRACAO_MARIADB.md). Não importe o instalador por cima nem desative FKs/CHECKs.
@@ -46,3 +50,7 @@ Guarde backup da pasta privada, especialmente a chave HMAC. Nunca a envie ao Git
 - Erro HTTP/arquivos privados acessíveis: instalação não é marcada como concluída. Confira logs do Apache e as proteções .htaccess; não publique a pasta privada.
 
 Consulte também a [instalação manual](INSTALACAO_XAMPP.md), o [guia de migração](../banco-de-dados/MIGRACAO_MARIADB.md) e o [relatório do instalador](../historico/RELATORIO_INSTALADOR.md). O assistente precisa de acesso local; não libera acesso externo ao banco nem cria instalador web. Bibliotecas visuais da interface continuam usando CDN/internet.
+
+## Atualização automatizada
+
+Para uma instalação existente preparada pelo assistente XAMPP, execute **ATUALIZAR_HYDROPONEX.bat** na pasta da versão nova, fora de htdocs. O assistente compara versões e arquivos, cria backups e aplica somente migrações pendentes. Não importe o esquema de instalação nova sobre seus dados. [Uso, limites e recuperação](ATUALIZACAO_XAMPP.md)

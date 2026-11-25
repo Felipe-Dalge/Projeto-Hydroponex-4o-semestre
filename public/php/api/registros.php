@@ -20,7 +20,7 @@ auth_api(['GET', 'POST'], function (): void {
         garden_access($pdo, $gardenId, $userId, 'registros.criar', true);
         $type = $data['tipo'] ?? null;
         if (!in_array($type, ['observacao', 'intervencao'], true)) auth_error(422, 'Tipo de registro inválido.');
-        $description = auth_string($data, 'descricao', 1000);
+    $description = auth_string($data, 'descricao', 1000, true, true);
         $plant = collaboration_plant($pdo, $gardenId, $data['id_planta'] ?? null);
         $s = $pdo->prepare('INSERT INTO horta_registro (id_horta,id_autor,tipo,descricao,id_planta) VALUES (?,?,?,?,?)');
         $s->execute([$gardenId, $userId, $type, $description, $plant]);

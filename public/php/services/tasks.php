@@ -8,11 +8,7 @@ const TASK_PRIORITIES = ['baixa', 'media', 'alta', 'critica'];
 
 function task_text(array $data, string $field, int $max, bool $required = false): string
 {
-    $value = $data[$field] ?? '';
-    if (!is_string($value) || !preg_match('//u', $value) || preg_match('/[\x00-\x08\x0b\x0c\x0e-\x1f\x7f]/u', $value)) auth_error(422, 'Texto inválido para ' . $field . '.');
-    $value = trim($value);
-    if (($required && $value === '') || preg_match_all('/./us', $value) > $max) auth_error(422, 'Confira o campo ' . $field . '.');
-    return $value;
+    return auth_string($data, $field, $max, $required, true);
 }
 
 function task_query(): string

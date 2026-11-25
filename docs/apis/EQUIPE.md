@@ -35,3 +35,5 @@ Códigos manuais anteriores à versão 1.5.0 podem ser aceitos ou revogados na t
 [Configurar SMTP no XAMPP](../instalacao/CONVITES_SMTP.md) · [Migrações](../banco-de-dados/MIGRACAO_MARIADB.md)
 
 [Relatório da revisão e testes de transporte](../desenvolvimento/VALIDACAO-EQUIPE.md)
+
+[Validação final com convites, tarefas e revogação](../desenvolvimento/VALIDACAO-FINAL.md)

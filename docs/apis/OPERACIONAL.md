@@ -10,7 +10,7 @@ O painel considera somente vínculos atuais em hortas ativas. As tarefas exibida
 - Os indicadores numéricos do cadastro são identificados como cadastro manual/legado. A origem das medições distingue registro manual, dispositivo, importação e simulação. A última leitura da lista considera sensores diretamente vinculados à planta.
 - Uma medição com mais de 24 horas recebe o aviso de desatualização. Data ausente ou futura recebe indicação própria. Essa faixa é um critério de atualização do painel. O estado Normal informado no cadastro continua acompanhado da disponibilidade dos dados.
 - Os detalhes exibem os limites registrados em cada leitura e destacam os valores que os ultrapassaram. Os registros de observação e intervenção exibem a descrição e a autoria informadas. O painel apresenta os fatos registrados sem atribuir uma causa automática.
-- **Concluídas nos últimos 7 dias** conta tarefas atualmente concluídas cuja data de conclusão está persistida. Reabrir uma tarefa limpa sua conclusão atual. Repetir a mesma atualização de estado preserva a data.
+- **Concluídas nos últimos 7 dias** conta tarefas atualmente concluídas cuja data de conclusão está persistida. Reabrir uma tarefa limpa sua conclusão atual. Uma repetição com versão anterior recebe conflito e preserva a data gravada.
 - **Histórico** lista as tarefas persistidas da própria conta em todos os estados. As demais opções filtram pendentes, em andamento, em verificação, concluídas e canceladas. Os detalhes mostram as ações permitidas, o histórico de eventos e as intervenções. O estado da planta continua sendo controlado pelo seu cadastro.
 
 ## Vínculos opcionais com plantas
@@ -46,3 +46,5 @@ Faça backup e aplique a [migração 008 MariaDB](../../database/mariadb/migrati
 Em uma base descartável sem usuários, execute `python tests/operacional.py --executar --php C:/xampp/php/php.exe`. [Preparação dos testes](../desenvolvimento/README.md)
 
 [Relatório de testes e arquivos da etapa](../desenvolvimento/VALIDACAO-OPERACIONAL.md)
+
+A revisão integrada também verifica observações multilinha e a preservação da sessão atual diante de respostas atrasadas. [Validação final](../desenvolvimento/VALIDACAO-FINAL.md)

@@ -49,10 +49,11 @@ function auth_body(array $allowed, int $maxBytes = 8192): array
     return $data;
 }
 
-function auth_string(array $data, string $key, int $max, bool $required = true): string
+function auth_string(array $data, string $key, int $max, bool $required = true, bool $multiline = false): string
 {
     $value = $data[$key] ?? '';
-    if (!is_string($value) || !preg_match('//u', $value) || preg_match('/[\x00-\x1f\x7f]/u', $value)) auth_error(422, 'Informe um valor válido para ' . $key . '.');
+    $controlCharacters = $multiline ? '/[\x00-\x08\x0b\x0c\x0e-\x1f\x7f]/u' : '/[\x00-\x1f\x7f]/u';
+    if (!is_string($value) || !preg_match('//u', $value) || preg_match($controlCharacters, $value)) auth_error(422, 'Informe um valor válido para ' . $key . '.');
     $value = trim($value);
     if (($required && $value === '') || preg_match_all('/./us', $value) > $max) auth_error(422, 'Confira o campo ' . $key . '.');
     return $value;

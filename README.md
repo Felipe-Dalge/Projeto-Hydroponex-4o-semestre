@@ -11,6 +11,7 @@ O Hydroponex é uma aplicação web para gerenciar hortas hidropônicas. Ele re�
 - **Infraestrutura** — gerenciamento de reservatórios, estruturas e nutrientes, com registro de aplicações e vínculos com sensores.
 - **Monitoramento** — cadastro de sensores, registro manual de medições e simulações identificadas, filtros, histórico e gráfico por sensor. A coleta automática por dispositivos IoT fica fora da implementação atual.
 - **Dashboard** — resumo de plantas, últimas leituras, alertas por limites configurados e gráficos a partir de registros de consumo de água. O painel distingue medições de simulações e sinaliza dados indisponíveis.
+- **Operação agrícola e tarefas** — painel por conta, problemas das plantas, atribuição, intervenções, verificação administrativa e histórico com controle de versões.
 
 ## Tecnologias
 
@@ -35,6 +36,7 @@ Hydroponex/
 ├── tests/               Testes PHP e suítes HTTP
 ├── docs/                Guias, contratos de API e histórico técnico
 ├── .env.example
+├── ATUALIZAR_HYDROPONEX.bat
 └── INSTALAR_HYDROPONEX.bat
 ```
 
@@ -56,6 +58,10 @@ O frontend chama as APIs PHP por caminhos relativos em `php/api/`. O backend val
 
 O assistente publica a aplicação, prepara o esquema e configura a conta restrita usada pelas APIs. Para uma instalação existente compatível, ele reutiliza o banco e a configuração privada. [Guia rápido](docs/instalacao/INSTALACAO_RAPIDA.md)
 
+Para atualizar uma instalação existente, extraia a versão nova fora de `htdocs` e execute **ATUALIZAR_HYDROPONEX.bat**. Ele identifica versões antigas, faz backup, aplica migrações pendentes e publica os arquivos preservando dados e configuração privada. Use `-CheckOnly` para apenas verificar ou `-FromGitHub` para baixar a `main` oficial. [Guia do atualizador e recuperação](docs/instalacao/ATUALIZACAO_XAMPP.md) · [Migrações](docs/banco-de-dados/MIGRACAO_MARIADB.md)
+
+Os convites exigem `composer install --no-dev` na raiz do clone e configuração SMTP. Na publicação pelo instalador, a variável `HYDROPONEX_MAIL_AUTOLOAD` aponta para o autoloader fora da pasta pública. [SMTP e Mailpit](docs/instalacao/CONVITES_SMTP.md)
+
 No procedimento manual, copie **o conteúdo de `public/`** para `C:/xampp/htdocs/hydroponex/`, incluindo os arquivos `.htaccess`. Em banco vazio, importe o esquema MariaDB e configure a conta da aplicação e a chave de autenticação no ambiente do PHP. Use `.env.example` como referência para os nomes das variáveis. [Instalação manual](docs/instalacao/INSTALACAO_XAMPP.md)
 
 ## Banco de dados
@@ -75,6 +81,8 @@ O MariaDB armazena contas, permissões, plantas, infraestrutura e histórico de 
 Espaço reservado para capturas da interface em execução, incluindo o dashboard, a gestão de hortas e o histórico de monitoramento.
 
 ## Testes e validação
+
+A validação da Etapa 5 reúne os fluxos individuais e de equipe, isolamento, correções e limites da execução. [Relatório final](docs/desenvolvimento/VALIDACAO-FINAL.md)
 
 A partir da raiz, execute as verificações locais de configuração e compatibilidade:
 

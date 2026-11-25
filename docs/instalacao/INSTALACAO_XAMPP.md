@@ -2,6 +2,8 @@
 
 > Para a instalação guiada atual, use `INSTALAR_HYDROPONEX.bat` e o [guia rápido](INSTALACAO_RAPIDA.md). O procedimento manual abaixo continua disponível.
 
+Para atualizar uma instalação existente, faça backup do banco e da configuração privada e aplique as migrações pendentes antes de publicar o código. Bases já em 1.7.0 podem receber as correções da Etapa 5 com o mesmo esquema. O instalador valida um banco existente e publica os arquivos, mas a aplicação das migrações incrementais é uma etapa administrativa separada. [Guia de migração](../banco-de-dados/MIGRACAO_MARIADB.md) · [Resultados da validação](../desenvolvimento/VALIDACAO-FINAL.md)
+
 Este é o guia atual para **MariaDB 10.4.32**, PHP >=8.1 e Apache 2.4 do XAMPP. A documentação anterior que exige somente MySQL registra etapas anteriores. Não é necessário instalar MySQL separado para esta edição. Outras versões MariaDB são rejeitadas até passarem pela suíte; a verificação não foi simplesmente removida.
 
 ## 1. Arquivos e serviços
@@ -112,3 +114,7 @@ Python >=3.10 para as suítes HTTP. Elas iniciam PHP temporário e removem suas 
 - 403/404 em php/storage, php/config, php/services, server, .env e SQLs: bloqueio esperado. Nas APIs, 401 pede login; 403 indica CSRF/papel; 404 pode indicar ausência de acesso à horta.
 - Apache em outra porta: acrescente a porta na URL. Não misture hosts/portas ao testar cookies de sessão.
 - Erro Aria 176/checksum: foi observado no serviço original desta máquina ao criar conta administrativa. Os testes desta entrega usaram instância limpa isolada dos mesmos binários 10.4.32. Faça backup e procure recuperação específica do MariaDB; não apague aria_log, ibdata ou diretórios de bancos. Essa ocorrência pode impedir instalar no serviço original até ele ser recuperado; não indica falha do DDL do Hydroponex.
+
+## Atualização automatizada
+
+Para uma instalação existente preparada pelo assistente XAMPP, execute **ATUALIZAR_HYDROPONEX.bat** na pasta da versão nova, fora de htdocs. O assistente compara versões e arquivos, cria backups e aplica somente migrações pendentes. Não importe o esquema de instalação nova sobre seus dados. [Uso, limites e recuperação](ATUALIZACAO_XAMPP.md)

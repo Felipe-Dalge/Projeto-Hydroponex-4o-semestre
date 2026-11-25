@@ -100,6 +100,9 @@
 
         async function backendRequest(path, method = 'GET', body = null) {
             if (method !== 'GET' && !csrfToken) await refreshCsrf();
+            const requestUser = currentUser?.id;
+            const requestToken = csrfToken;
+            const sessionCurrent = () => currentUser?.id === requestUser && csrfToken === requestToken;
             const options = { method, credentials: 'same-origin', cache: 'no-store', headers: { Accept: 'application/json' } };
             if (method !== 'GET') {
                 options.headers['Content-Type'] = 'application/json';
@@ -113,17 +116,17 @@
             if (!response.ok || !data.success) {
                 const error = new Error(data.message || 'Não foi possível concluir a operação.');
                 error.status = response.status;
-                if (response.status === 403 && data.message === 'Token de segurança inválido ou ausente.') {
+                if (sessionCurrent() && response.status === 403 && data.message === 'Token de segurança inválido ou ausente.') {
                     csrfToken = '';
                     error.message = 'A sessão de segurança expirou. Envie o formulário novamente.';
                 }
-                if (response.status === 401 && currentUser && !path.endsWith('/auth/login.php')) {
+                if (sessionCurrent() && response.status === 401 && currentUser && !path.endsWith('/auth/login.php')) {
                     clearAuthentication();
                     navigateTo('login');
                 }
                 throw error;
             }
-            if (data.csrfToken) csrfToken = data.csrfToken;
+            if (sessionCurrent() && data.csrfToken) csrfToken = data.csrfToken;
             return data;
         }
 

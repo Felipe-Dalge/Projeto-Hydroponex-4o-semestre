@@ -20,6 +20,9 @@ A área é gravada na sessão e pode ser alterada sem novo login quando ambas es
 | Atribuir tarefas e atualizar tarefas da horta | Sim | Sim | — | — |
 | Consultar e atualizar tarefas atribuídas à própria conta | Sim | Sim | Sim | — |
 | Registrar observações e intervenções | Sim | Sim | Sim | — |
+| Aprovar tarefa em verificação, corrigir, reabrir ou cancelar com justificativa | Sim | Sim | — | — |
+
+Na tarefa, iniciar e registrar trabalho exige ser o responsável atual. Proprietários e gestores consultam as tarefas da horta e administram sua atribuição, mas precisam atribuir a si mesmos para executá-las. A área escolhida no navegador mantém as permissões do vínculo. [Regras detalhadas](TAREFAS.md)
 
 O proprietário pode gerenciar os papéis gestor, agricultor e leitor. A propriedade fica protegida nas operações de convite e gestão de membros. A transferência de plantas exige autorização administrativa nas duas hortas. Catálogos pessoais sem horta no endereço exigem acesso à área administrativa e preservam as regras de autoria. Com horta indicada, operações de escrita exigem permissão administrativa nessa horta.
 
@@ -48,8 +51,8 @@ As rotas abaixo são relativas a `php/api/`. Escritas usam sessão e `X-CSRF-Tok
 | `PATCH membros.php?horta=ID` | `id_usuario` do membro e `papel` escolhido pelo proprietário. |
 | `DELETE membros.php?horta=ID` | `id_usuario` do membro cujo acesso será revogado. |
 | `GET tarefas.php?horta=ID` | Lista tarefas conforme o papel. Proprietários e gestores também recebem a lista de responsáveis elegíveis. |
-| `POST tarefas.php?horta=ID` | `titulo`, `id_responsavel` e `descricao` opcional. |
-| `PATCH tarefas.php?horta=ID` | `id_tarefa` e `estado` com `pendente`, `em_andamento` ou `concluida`. |
+| `POST tarefas.php?horta=ID` | `titulo` obrigatório. Responsável, planta, descrição, prioridade, prazo e origem do problema conforme o contrato de tarefas. |
+| `PATCH tarefas.php?horta=ID` | `id_tarefa`, `versao`, `acao` e justificativa quando exigida. Ações e transições conforme o contrato de tarefas. |
 | `GET registros.php?horta=ID` | Lista o histórico de observações e intervenções na horta. |
 | `POST registros.php?horta=ID` | `tipo` com `observacao` ou `intervencao`, e `descricao`. A autoria vem da sessão. |
 

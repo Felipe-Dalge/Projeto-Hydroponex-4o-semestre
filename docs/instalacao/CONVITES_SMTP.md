@@ -37,3 +37,9 @@ Se ocorrer **Falha no envio**, confira o Mailpit ou provedor, as portas, o autol
 Com o Composer instalado, uma base descartável 1.7.0 e as variáveis de banco configuradas, execute `python tests/equipe.py --executar --php C:/xampp/php/php.exe`. O teste inicia dois processos PHP e um capturador SMTP local que pode simular rejeição. [Configuração da base de testes](../desenvolvimento/README.md)
 
 Para verificar STARTTLS e TLS implícito, execute `python tests/smtp.py --php C:/xampp/php/php.exe --openssl C:/xampp/apache/bin/openssl.exe`. Essa suíte gera certificados temporários e verifica a entrega criptografada e a rejeição de uma cadeia sem autoridade confiável. O teste usa somente loopback e dispensa conexão ao banco.
+
+O teste `python tests/integracao.py --executar --php C:/xampp/php/php.exe` cobre o convite seguido de atribuição, execução, verificação e revogação, além de convites emitidos por dois administradores para a mesma conta. Na Etapa 5, o fluxo também foi exercitado no Apache do XAMPP com PHPMailer, Mailpit e Edge. [Resultados e limites](../desenvolvimento/VALIDACAO-FINAL.md)
+
+## Dependências após atualizar
+
+O atualizador guarda PHPMailer em uma pasta privada da atualização e salva HYDROPONEX_MAIL_AUTOLOAD na configuração privada. Esse caminho tem preferência sobre o caminho do clone definido no ambiente. As demais variáveis de transporte SMTP continuam no Apache. Não exclua a pasta privada de dependências ativa. [Atualizador](ATUALIZACAO_XAMPP.md)

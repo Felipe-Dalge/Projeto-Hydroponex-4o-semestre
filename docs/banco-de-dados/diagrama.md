@@ -21,13 +21,15 @@ erDiagram
     horta_tarefa ||--o{ tarefa_intervencao : trabalho
     usuario o|--o{ tarefa_historico : autoria
     usuario ||--o{ tarefa_intervencao : autoria
+    horta ||--o{ tarefa_historico : escopo_composto
+    horta ||--o{ tarefa_intervencao : escopo_composto
     monitoramento_sensor o|--o{ horta_tarefa : leitura_opcional
     planta o|--o{ horta_registro : registro_opcional
     usuario ||--o{ equipe_convite : emite
     equipe_convite ||--|{ equipe_convite_horta : oferece
     horta o|--o{ equipe_convite_horta : destino
     usuario ||--o{ horta_tarefa : cria
-    usuario ||--o{ horta_tarefa : executa
+    usuario o|--o{ horta_tarefa : responsavel_opcional
     usuario ||--o{ horta_registro : registra
     usuario ||--o{ token_usuario : recebe
     horta ||--o{ horta_cultura : habilita
@@ -190,6 +192,64 @@ erDiagram
         datetime janela_em
         int tentativas
     }
+    equipe_convite {
+        int id_convite PK
+        int id_emissor FK
+        string email
+        binary codigo_hash UK
+        datetime expira_em
+        datetime enviado_em
+        datetime aceito_em
+        datetime recusado_em
+        datetime cancelado_em
+    }
+    equipe_convite_horta {
+        int id_alvo PK
+        int id_convite FK
+        int id_horta FK "opcional após exclusão, invalida o lote"
+    }
+    horta_tarefa {
+        int id_tarefa PK
+        int id_horta FK
+        int id_planta FK "opcional, mesma horta"
+        int id_criador FK
+        int id_responsavel FK "opcional"
+        string titulo
+        string prioridade
+        string estado
+        int versao
+        datetime prazo_em
+        datetime concluida_em
+        bigint id_leitura FK "opcional, mesma horta"
+    }
+    tarefa_historico {
+        bigint id_evento PK
+        int id_tarefa FK
+        int id_horta FK
+        int id_autor FK "opcional apenas no evento de migração"
+        string evento
+        json detalhes
+        datetime criado_em
+    }
+    tarefa_intervencao {
+        bigint id_intervencao PK
+        int id_tarefa FK
+        int id_horta FK
+        int id_autor FK
+        string tipo
+        string descricao
+        datetime realizada_em
+        datetime registrado_em
+    }
+    horta_registro {
+        int id_registro PK
+        int id_horta FK
+        int id_planta FK "opcional, mesma horta"
+        int id_autor FK
+        string tipo
+        string descricao
+        datetime criado_em
+    }
 ```
 
 `schema_version` e `auth_limite` são tabelas técnicas sem relacionamento de domínio. Sensor sem alvo específico mede o ambiente da própria horta; com alvo, escolhe exatamente um entre reservatório, estrutura e planta. Cada monitoramento admite uma leitura por sensor; nova amostra cria outro monitoramento. O vínculo direto de horta em `monitoramento_sensor` é controlado pelas duas FKs compostas, não é um endereço ou uma associação independente.
@@ -203,3 +263,5 @@ O schema 1.4.0 adiciona o perfil de entrada em `usuario`. O papel em `usuario_ho
 O schema 1.5.0 adiciona convites por e-mail. Cada convite pode oferecer várias hortas e só é aceito se todos os destinos permanecerem válidos. A referência de um destino fica nula após a exclusão da horta para preservar a composição original do convite. [Equipe](../apis/EQUIPE.md)
 
 O schema 1.6.0 vincula opcionalmente tarefas e registros a uma planta da mesma horta e registra a data das novas conclusões. [Painel operacional](../apis/OPERACIONAL.md)
+
+O schema 1.7.0 amplia a tarefa com responsável opcional, prioridade, prazo, versão e leitura de origem. Histórico e intervenções usam a chave composta da tarefa e da horta. A atribuição exige vínculo operacional atual no momento da gravação, mas a referência ao usuário permanece após revogação para preservar a autoria. [Tarefas e transições](../apis/TAREFAS.md)

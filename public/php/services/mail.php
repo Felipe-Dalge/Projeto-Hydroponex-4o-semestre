@@ -7,7 +7,8 @@ use PHPMailer\PHPMailer\PHPMailer;
 function send_team_invitation_mail(string $recipient, string $token): bool
 {
     try {
-        $autoload = getenv('HYDROPONEX_MAIL_AUTOLOAD') ?: dirname(__DIR__, 3) . '/vendor/autoload.php';
+        $autoload = (function_exists('hydroponex_setting') ? hydroponex_setting('HYDROPONEX_MAIL_AUTOLOAD') : false)
+            ?: (getenv('HYDROPONEX_MAIL_AUTOLOAD') ?: dirname(__DIR__, 3) . '/vendor/autoload.php');
         $path = realpath($autoload);
         $public = realpath(dirname(__DIR__, 2));
         if (!$path || !$public || strncasecmp($path, $public . DIRECTORY_SEPARATOR, strlen($public) + 1) === 0) {

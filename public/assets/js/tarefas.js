@@ -35,6 +35,9 @@ function clearManagedTasks() {
     taskListVersion++;
     document.getElementById('tasks-list').replaceChildren();
     document.getElementById('task-create-form').classList.add('hidden');
+    document.getElementById('tasks-prev').disabled = true;
+    document.getElementById('tasks-next').disabled = true;
+    setFeedback('tasks-page', '');
     closeTaskDetail();
 }
 
@@ -58,6 +61,9 @@ async function loadTasks(page = 1) {
     const form = document.getElementById('task-create-form');
     document.getElementById('tasks-list').replaceChildren();
     form.classList.add('hidden');
+    document.getElementById('tasks-prev').disabled = true;
+    document.getElementById('tasks-next').disabled = true;
+    setFeedback('tasks-page', '');
     setFeedback('tasks-feedback', 'Carregando tarefas…');
     const current = () => version === taskListVersion && currentUser?.id === user && garden === selectedHortaId && location.hash === '#tarefas';
     if (!garden) { setFeedback('tasks-feedback', 'Selecione uma horta para gerenciar tarefas.'); return; }

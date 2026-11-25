@@ -43,6 +43,8 @@ A migração 007 adiciona o vínculo opcional das tarefas e dos registros com um
 
 A migração 008 adiciona prioridade, prazo, responsável opcional, versão e referência do problema à tarefa. Cria histórico e intervenções com integridade por horta. Tarefas existentes preservam seus valores, e o evento de migração identifica o estado conhecido com autor desconhecido. Aplique antes de publicar a versão 1.7.0. [Tarefas](../apis/TAREFAS.md) · [Variante MySQL 8](../../database/migrations/008_gestao_tarefas.sql)
 
+As correções da Etapa 5 usam o mesmo schema 1.7.0. Uma base já nessa versão recebe apenas os arquivos atualizados. A validação final executou as migrações 005, 006, 007 e 008 sobre dados de teste 1.3.0 e comparou os valores das colunas anteriores a cada passo. O dump com `--single-transaction --hex-blob` foi restaurado em uma segunda base e comparado. As migrações 002 a 004 e o destino MySQL 8 permanecem sujeitos à validação de execução nesta revisão. [Resultados](../desenvolvimento/VALIDACAO-FINAL.md)
+
 **Transferência futura MySQL -> MariaDB:** é uma cópia lógica entre bancos separados, não executar ALTER no MySQL para convertê-lo em MariaDB. Não importe dump estrutural MySQL diretamente sobre o destino.
 
 1. Pare escritas e faça backup completo da origem (phpMyAdmin Exportar personalizado, estrutura/dados; inclua hashes e todas as entidades). Guarde fora de htdocs. Teste restauração em outra base do mesmo produto.
@@ -55,3 +57,7 @@ A migração 008 adiciona prioridade, prazo, responsável opcional, versão e re
 8. Só então aponte as variáveis do Apache ao destino; reinicie e faça validação funcional. Para reverter, suspenda novas escritas, preserve-as para reconciliação e volte à origem. Não descarte silenciosamente alterações feitas após a troca.
 
 Essas são orientações para transferência futura, não uma ferramenta automática de conversão de qualquer dump. Nenhuma base de usuário foi apagada, deduplicada ou migrada automaticamente nesta entrega. As migrações versionadas convertidas foram executadas com dados de teste preservados.
+
+## Atualizador XAMPP
+
+O assistente **ATUALIZAR_HYDROPONEX.bat** automatiza a cadeia incremental descrita neste documento usando o manifesto em database/mariadb/migrations/manifest.json. A versão do esquema vem de schema_version; a versão da aplicação vem de public/version.json. A aplicação 1.7.1 mantém o esquema 1.7.0. Migrações interrompidas não são repetidas automaticamente: DDL confirma implicitamente no MariaDB. Instalações sem configuração privada ou sem histórico de versão exigem diagnóstico assistido. [Procedimento, backups e recuperação](../instalacao/ATUALIZACAO_XAMPP.md)

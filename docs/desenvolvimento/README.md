@@ -27,10 +27,12 @@ Crie uma base descartável cujo nome termine em `_test` ou `_tests`, importe o [
 ```powershell
 & C:/xampp/php/php.exe scripts/diagnostico_mariadb.php --schema
 & C:/xampp/php/php.exe tests/integridade.php
+& C:/xampp/php/php.exe tests/integridade_tarefas.php
 python tests/colaboracao.py --executar --php C:/xampp/php/php.exe
 python tests/equipe.py --executar --php C:/xampp/php/php.exe
 python tests/operacional.py --executar --php C:/xampp/php/php.exe
 python tests/tarefas.py --executar --php C:/xampp/php/php.exe
+python tests/integracao.py --executar --php C:/xampp/php/php.exe
 python tests/autenticacao.py --executar --php C:/xampp/php/php.exe
 python tests/hortas.py --executar --php C:/xampp/php/php.exe
 python tests/plantas.py --executar --php C:/xampp/php/php.exe
@@ -42,4 +44,10 @@ Execute as suítes sequencialmente na mesma base. Elas usam cópias temporárias
 
 A suíte de equipe requer `composer install` na raiz do clone. Ela fornece seu próprio SMTP de teste em loopback. [Configuração SMTP e Mailpit](../instalacao/CONVITES_SMTP.md)
 
+A suíte `integracao.py` também requer Composer e usa um capturador SMTP em loopback. Ela cobre os cinco cenários completos da Etapa 5, com tarefas, revogação e permissões distintas por horta. A suíte `node tests/frontend_integracao.cjs` verifica respostas atrasadas de autenticação e os controles de paginação, sem banco ou navegador. [Relatório final](VALIDACAO-FINAL.md)
+
 Para verificar o transporte seguro em loopback, execute `python tests/smtp.py --php C:/xampp/php/php.exe --openssl C:/xampp/apache/bin/openssl.exe`. A suíte verifica STARTTLS, TLS implícito e rejeição de certificados sem CA confiável. Os certificados ficam em uma pasta temporária, e o banco fica fora desse teste.
+
+## Atualizador XAMPP
+
+[Arquitetura, testes executados e reprodução](ATUALIZADOR.md) · [Uso e recuperação](../instalacao/ATUALIZACAO_XAMPP.md). A suíte tests/atualizador.py cria somente bancos aleatórios próprios; a cadeia legada pode ser verificada fornecendo o esquema MariaDB 1.3.0 original.

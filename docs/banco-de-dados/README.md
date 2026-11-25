@@ -2,6 +2,8 @@
 
 A instalação XAMPP usa MariaDB 10.4.32, InnoDB, `utf8mb4_unicode_ci` e schema lógico 1.7.0. O instalador valida a versão antes de reutilizar um banco existente. A conta da aplicação tem permissões `SELECT`, `INSERT`, `UPDATE` e `DELETE` restritas ao banco do projeto.
 
+A Etapa 5 mantém o schema 1.7.0. A execução de teste conferiu a instalação limpa, a sequência de migrações 005 a 008 sobre uma base 1.3.0, preservação das colunas antigas, 48 chaves estrangeiras e backup/restauração. [Relatório final](../desenvolvimento/VALIDACAO-FINAL.md)
+
 - [Esquema MariaDB para banco novo](../../database/mariadb/hydroponex_mariadb.sql)
 - [Dados fictícios opcionais](../../database/mariadb/seed_mariadb.sql)
 - [Consultas de verificação MariaDB](../../database/mariadb/verificar_mariadb.sql)

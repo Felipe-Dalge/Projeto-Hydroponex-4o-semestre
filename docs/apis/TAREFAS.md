@@ -73,3 +73,5 @@ Faça backup, suspenda as escritas e aplique a [migração 008 MariaDB](../../da
 Para testar, prepare uma base descartável sem usuários com nome terminado em `_test` ou `_tests` e execute `python tests/tarefas.py --executar --php C:/xampp/php/php.exe`. [Preparação do ambiente](../desenvolvimento/README.md)
 
 [Relatório de testes e arquivos da etapa](../desenvolvimento/VALIDACAO-TAREFAS.md)
+
+Na revisão final, a validação de textos foi compartilhada com os registros operacionais, mantendo quebras de linha e as restrições de tamanho e caracteres. Os controles de paginação da gestão são limpos quando muda o contexto ou a consulta falha. O schema permanece 1.7.0. [Validação integrada](../desenvolvimento/VALIDACAO-FINAL.md)

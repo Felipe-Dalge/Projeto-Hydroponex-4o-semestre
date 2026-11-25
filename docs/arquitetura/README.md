@@ -8,6 +8,9 @@ flowchart LR
     API --> AUTH[Sessão, CSRF e papéis da horta]
     API --> SERVICES[Serviços de domínio]
     SERVICES -->|PDO| DB[(MariaDB)]
+    SERVICES --> MAIL[PHPMailer e SMTP]
+    MAIL --> LINK[Convite por link]
+    LINK --> AUTH
 ```
 
 `public/php/config/` centraliza conexão, sessão e autenticação. `public/php/services/` contém as operações compartilhadas pelos endpoints. `public/php/storage/` conserva o JSON legado usado pelo importador CLI, enquanto as APIs consultam o banco. As pastas internas têm regras `.htaccess` de bloqueio e o router aplica a proteção equivalente no servidor embutido.
@@ -24,3 +27,7 @@ Contratos por módulo:
 - [Culturas e infraestrutura](../apis/INFRAESTRUTURA.md)
 - [Sensores, monitoramento e dashboard](../apis/MONITORAMENTO.md)
 - [Modelo relacional](../banco-de-dados/diagrama.md)
+- [Equipe e convites](../apis/EQUIPE.md)
+- [Painel operacional](../apis/OPERACIONAL.md)
+- [Tarefas e intervenções](../apis/TAREFAS.md)
+- [Validação integrada](../desenvolvimento/VALIDACAO-FINAL.md)
