@@ -1,0 +1,104 @@
+/* border-box inclui padding e borda na largura declarada: campos de 100% não ultrapassam o painel. */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+:root {
+    --verde: #15803d;
+    --verde-escuro: #166534;
+    --verde-claro: #f0fdf4;
+    --fundo: #f8fafc;
+    --superficie: #fff;
+    --texto: #1e293b;
+    --secundario: #475569;
+    --borda: #cbd5e1;
+    --normal: #166534;
+    --atencao: #854d0e;
+    --fundo-atencao: #fefce8;
+    --alerta: #991b1b;
+    --fundo-alerta: #fef2f2;
+    --foco: #0369a1;
+    --espaco-xs: .5rem;
+    --espaco-sm: .75rem;
+    --espaco: 1rem;
+    --espaco-lg: 1.5rem;
+    --espaco-xl: 2rem;
+    --raio: 1rem;
+    --linha: 1px solid var(--borda);
+    --fonte: system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+body { margin: 0; background: var(--fundo); color: var(--texto); font: 1rem/1.6 var(--fonte); }
+h1, h2, h3, p { margin: 0; }
+h1 { font-size: clamp(1.75rem, 5vw, 2.5rem); line-height: 1.2; margin-bottom: var(--espaco-xs); }
+h2 { font-size: 1.25rem; line-height: 1.4; }
+h3 { font-size: 1rem; }
+a { color: var(--verde-escuro); text-underline-offset: .2em; }
+a:hover { text-decoration-thickness: .15em; }
+button, input, select, textarea { font: inherit; }
+button, a, input, select, textarea { -webkit-tap-highlight-color: transparent; }
+:focus-visible { outline: 3px solid var(--foco); outline-offset: 3px; }
+[hidden] { display: none !important; }
+.container { width: min(100%, 80rem); margin-inline: auto; padding-inline: var(--espaco); }
+.cabecalho { background: var(--superficie); border-bottom: var(--linha); }
+/* Flex organiza marca, navegação e ações em uma direção; wrap evita compressão dos controles. */
+.barra, nav, .acoes, .cabecalho-painel, .cabecalho-card { display: flex; flex-wrap: wrap; align-items: center; gap: var(--espaco-sm); }
+.barra { justify-content: space-between; padding-block: var(--espaco); }
+.marca { font-size: 1.25rem; font-weight: 750; text-decoration: none; }
+.marca span { display: block; color: var(--secundario); font-size: .875rem; font-weight: 500; }
+nav a { display: inline-flex; align-items: center; min-height: 44px; padding: .35rem .5rem; font-size: .9rem; }
+main { padding-block: var(--espaco-xl); }
+.introducao { margin-bottom: var(--espaco-lg); }
+.sobretitulo { color: var(--verde-escuro); font-size: .85rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; }
+.aviso-local { margin-top: var(--espaco); padding: var(--espaco); border: 1px solid #86efac; border-radius: var(--raio); background: var(--verde-claro); color: var(--verde-escuro); }
+.aviso-local strong { display: block; }
+/* Grid controla linhas/colunas dos indicadores e da composição formulário/lista. Primeiro, uma coluna. */
+.indicadores, .layout-principal { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--espaco); }
+.indicadores { margin-bottom: var(--espaco-lg); }
+.indicador, .painel { min-width: 0; padding: var(--espaco); border: var(--linha); border-radius: var(--raio); background: var(--superficie); }
+.indicador p { font-size: 2rem; font-weight: 750; line-height: 1.2; margin-top: var(--espaco-xs); }
+.indicador.atencao { color: var(--atencao); background: var(--fundo-atencao); }
+.indicador.alerta { color: var(--alerta); background: var(--fundo-alerta); }
+.cabecalho-painel { justify-content: space-between; margin-bottom: var(--espaco-sm); }
+.painel > p, small, .meta { color: var(--secundario); }
+form { margin-top: var(--espaco); }
+.campo { margin-bottom: var(--espaco); }
+label { display: block; margin-bottom: .35rem; font-weight: 650; }
+input, select, textarea { width: 100%; min-width: 0; min-height: 44px; padding: .65rem .75rem; border: 1px solid #94a3b8; border-radius: .65rem; color: var(--texto); background: var(--superficie); }
+textarea { resize: vertical; }
+input[aria-invalid="true"], select[aria-invalid="true"], textarea[aria-invalid="true"] { border-color: var(--alerta); }
+small { display: block; margin-top: .3rem; font-size: .85rem; }
+.erro-campo { color: var(--alerta); font-size: .9rem; margin-top: .3rem; }
+.botao { min-height: 44px; padding: .65rem 1rem; border: var(--linha); border-radius: .65rem; cursor: pointer; font-weight: 650; }
+.primario { background: var(--verde); color: #fff; border-color: var(--verde); }
+.primario:hover { background: var(--verde-escuro); }
+.secundario { background: var(--superficie); color: var(--texto); }
+.excluir { background: var(--superficie); color: var(--alerta); border-color: #fca5a5; }
+button:disabled { opacity: .6; cursor: not-allowed; }
+.lista { display: grid; gap: var(--espaco); }
+.inspecao { min-width: 0; padding: var(--espaco); border: var(--linha); border-radius: .75rem; }
+.cabecalho-card { justify-content: space-between; align-items: flex-start; margin-bottom: var(--espaco-xs); }
+.selo { padding: .15rem .65rem; border-radius: 2rem; font-size: .85rem; font-weight: 700; }
+.selo.normal { color: var(--normal); background: var(--verde-claro); }
+.selo.atencao { color: var(--atencao); background: var(--fundo-atencao); }
+.selo.alerta { color: var(--alerta); background: var(--fundo-alerta); }
+.observacao { white-space: pre-wrap; margin-block: var(--espaco-sm); }
+.inspecao, .aviso-local, .mensagem, .rodape { overflow-wrap: anywhere; }
+.meta { font-size: .875rem; }
+.identificador { display: block; margin-block: var(--espaco-xs) var(--espaco); }
+.estado-vazio { padding: var(--espaco-lg) var(--espaco); border: 1px dashed var(--borda); border-radius: .75rem; }
+.mensagem { margin-bottom: var(--espaco); padding: var(--espaco); border: 1px solid #86efac; border-radius: .75rem; background: var(--verde-claro); color: var(--verde-escuro); }
+.mensagem.erro { background: var(--fundo-alerta); color: var(--alerta); border-color: #fca5a5; }
+.rodape { padding-block: var(--espaco-xl); color: var(--secundario); font-size: .875rem; }
+.pular-conteudo, .visualmente-oculto { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.pular-conteudo:focus { position: fixed; z-index: 10; top: 1rem; left: 1rem; width: auto; height: auto; padding: 1rem; clip-path: none; background: var(--superficie); }
+/* Em 768px os três indicadores cabem sem apertar os títulos; os painéis ainda ficam empilhados. */
+@media (min-width: 768px) {
+    .container { padding-inline: var(--espaco-lg); }
+    .indicadores { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .painel { padding: var(--espaco-lg); }
+}
+/* A partir de 1024px sobram cerca de 360px para o formulário e 500px para os cards. */
+@media (min-width: 1024px) {
+    .layout-principal { grid-template-columns: minmax(0, 2fr) minmax(0, 3fr); align-items: start; }
+}

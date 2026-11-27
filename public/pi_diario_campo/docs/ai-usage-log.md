@@ -675,3 +675,19 @@ Priorize, nesta ordem:
 - Início: somente este log foi criado; implementação ainda não gerada.
 - Alterações manuais do grupo: nenhuma observada nesta interação. Espaço para registrar autor, data, arquivo, trecho e justificativa: **[preencher após ocorrer]**.
 - Decisões do grupo: **[preencher após revisão humana]**. Sugestões e decisões de implementação da IA não representam aprovação dos integrantes.
+
+### Geração inicial V1
+
+- Criados index.html, css/styles.css e js/script.js independentes, sem dependências externas.
+- Modificado somente public/index.html no sistema principal, acrescentando três links: menu desktop, menu móvel e navegação operacional. Nenhuma API ou tabela modificada.
+- Decisões de implementação da IA: texto livre para horta; aviso de armazenamento compartilhado pelo navegador; limite de 100/160/2000 caracteres; validação de datas reais; IDs únicos; textContent; gravação antes de trocar o array; recusa de estrutura incompatível e IDs repetidos; bloqueio de conflitos entre abas.
+- Flex para barras/ações, Grid para indicadores/painéis, indicadores em três colunas em 768px e painéis lado a lado em 1024px. Essas medidas ainda serão verificadas no navegador.
+- Ainda não há resultados de execução nesta entrada; testes vêm a seguir.
+
+### Autorrevisão e testes durante V1 (não são novos prompts)
+
+- A suíte de navegador chegou a 52 verificações aprovadas no Edge, incluindo CRUD, falhas de armazenamento, XSS textual, conflitos de abas, teclado e cinco larguras.
+- Identificado na inspeção: o router PHP existente não resolve diretórios internos como índice. Os três links passaram a apontar explicitamente para pi_diario_campo/index.html, compatível com Apache e com o router, sem alterar o servidor.
+- Corrigidos dois problemas no próprio teste: URLs locais resolvidas pelo DOM não são bibliotecas externas; a preparação de localStorage deve aguardar um documento HTTP em vez de about:blank. Não foram defeitos de persistência do módulo.
+- Captura de protótipo gerada de uma execução real com exemplo fictício identificado como demonstração.
+- Testes JavaScript preexistentes: 9 verificações aprovadas. O CRUD PHP/MySQL completo não foi reexecutado nesta atividade; não houve modificação nele.

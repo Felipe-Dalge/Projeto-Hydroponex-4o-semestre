@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="referrer" content="same-origin">
+    <title>Diário de Campo | Hydroponex</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <script src="js/script.js" defer></script>
+</head>
+<body>
+    <a class="pular-conteudo" href="#conteudo">Pular para o conteúdo</a>
+    <header class="cabecalho">
+        <div class="container barra">
+            <a class="marca" href="../index.html#operacao">Hydroponex <span>Diário de Campo</span></a>
+            <nav aria-label="Navegação do diário">
+                <a href="#formulario">Nova inspeção</a>
+                <a href="#historico">Inspeções</a>
+                <a href="../index.html#operacao">Voltar ao sistema</a>
+            </nav>
+        </div>
+    </header>
+    <main id="conteudo" class="container" tabindex="-1">
+        <section class="introducao" aria-labelledby="titulo">
+            <p class="sobretitulo">Observações preliminares</p>
+            <h1 id="titulo">Diário de Campo</h1>
+            <p>Registre o que você percebeu na horta antes de planejar uma ação.</p>
+            <aside class="aviso-local" aria-label="Limites do armazenamento local">
+                <strong>Rascunhos locais deste navegador.</strong>
+                Estes registros não são sincronizados entre dispositivos ou contas e não constituem registros oficiais compartilhados da horta.
+                Outras pessoas que usam este navegador podem vê-los. Não inclua senhas, tokens ou informações sensíveis.
+                Limpar os dados do navegador remove o diário. A horta é um texto livre, sem vínculo com as permissões do sistema.
+            </aside>
+        </section>
+        <p id="mensagem" class="mensagem" role="status" aria-live="polite" aria-atomic="true" tabindex="-1" hidden></p>
+        <noscript><p class="aviso-local">Ative o JavaScript para cadastrar e consultar as inspeções.</p></noscript>
+        <section aria-labelledby="titulo-resumo">
+            <h2 id="titulo-resumo" class="visualmente-oculto">Resumo de todas as inspeções</h2>
+            <div class="indicadores">
+                <article class="indicador"><h3>Total de inspeções</h3><p id="total-inspecoes">0</p></article>
+                <article class="indicador atencao"><h3>Em atenção</h3><p id="total-atencao">0</p></article>
+                <article class="indicador alerta"><h3>Em alerta</h3><p id="total-alerta">0</p></article>
+            </div>
+        </section>
+        <div class="layout-principal">
+            <section id="formulario" class="painel" aria-labelledby="titulo-formulario">
+                <div class="cabecalho-painel"><h2 id="titulo-formulario">Nova inspeção</h2><span id="modo-edicao" hidden>Em edição</span></div>
+                <p>Todos os campos são obrigatórios. A data se refere ao dia observado.</p>
+                <!-- novalidate permite mensagens específicas e foco consistente; os atributos HTML continuam documentando as regras. -->
+                <form id="inspecao-form" novalidate>
+                    <div class="campo">
+                        <label for="horta">Horta</label>
+                        <input id="horta" name="horta" type="text" required maxlength="100" aria-describedby="horta-erro" autocomplete="off">
+                        <p id="horta-erro" class="erro-campo" hidden></p>
+                    </div>
+                    <div class="campo">
+                        <label for="local">Planta, bancada ou local</label>
+                        <input id="local" name="local" type="text" required maxlength="160" aria-describedby="local-erro" autocomplete="off">
+                        <p id="local-erro" class="erro-campo" hidden></p>
+                    </div>
+                    <div class="campo">
+                        <label for="data">Data da inspeção</label>
+                        <input id="data" name="data" type="date" required min="0001-01-01" max="9999-12-31" aria-describedby="data-erro">
+                        <p id="data-erro" class="erro-campo" hidden></p>
+                    </div>
+                    <div class="campo">
+                        <label for="condicao">Condição observada</label>
+                        <select id="condicao" name="condicao" required aria-describedby="condicao-erro">
+                            <option value="">Selecione a condição</option>
+                            <option value="Normal">Normal</option>
+                            <option value="Atenção">Atenção</option>
+                            <option value="Alerta">Alerta</option>
+                        </select>
+                        <p id="condicao-erro" class="erro-campo" hidden></p>
+                    </div>
+                    <div class="campo">
+                        <label for="categoria">Categoria</label>
+                        <select id="categoria" name="categoria" required aria-describedby="categoria-erro">
+                            <option value="">Selecione a categoria</option>
+                            <option value="Água">Água</option>
+                            <option value="Nutrientes">Nutrientes</option>
+                            <option value="Temperatura">Temperatura</option>
+                            <option value="Saúde vegetal">Saúde vegetal</option>
+                            <option value="Outros">Outros</option>
+                        </select>
+                        <p id="categoria-erro" class="erro-campo" hidden></p>
+                    </div>
+                    <div class="campo">
+                        <label for="observacao">Observação</label>
+                        <textarea id="observacao" name="observacao" rows="5" required maxlength="2000" aria-describedby="observacao-ajuda observacao-erro"></textarea>
+                        <small id="observacao-ajuda">Até 2.000 caracteres. Descreva o que foi observado, sem dados sensíveis.</small>
+                        <p id="observacao-erro" class="erro-campo" hidden></p>
+                    </div>
+                    <div class="acoes">
+                        <button id="salvar" type="submit" class="botao primario">Cadastrar inspeção</button>
+                        <button id="cancelar-edicao" type="button" class="botao secundario" hidden>Cancelar edição</button>
+                    </div>
+                </form>
+            </section>
+            <section id="historico" class="painel" aria-labelledby="titulo-historico">
+                <div class="cabecalho-painel"><h2 id="titulo-historico">Inspeções registradas</h2><span id="quantidade-visivel" aria-live="polite"></span></div>
+                <div class="campo filtro">
+                    <label for="filtro-condicao">Filtrar por condição</label>
+                    <select id="filtro-condicao">
+                        <option value="">Todas as condições</option>
+                        <option value="Normal">Normal</option>
+                        <option value="Atenção">Atenção</option>
+                        <option value="Alerta">Alerta</option>
+                    </select>
+                </div>
+                <p id="estado-vazio" class="estado-vazio">Nenhuma inspeção cadastrada. Use o formulário para começar.</p>
+                <div id="lista-inspecoes" class="lista" aria-label="Lista de inspeções"></div>
+            </section>
+        </div>
+    </main>
+    <footer class="container rodape">
+        <p>Hydroponex · SIF072 — Programação para Web I</p>
+        <p>Diário preliminar local. Para trabalho compartilhado, utilize os registros oficiais e as tarefas do sistema.</p>
+    </footer>
+</body>
+</html>
