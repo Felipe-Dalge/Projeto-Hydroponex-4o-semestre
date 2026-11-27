@@ -691,3 +691,14 @@ Priorize, nesta ordem:
 - Corrigidos dois problemas no próprio teste: URLs locais resolvidas pelo DOM não são bibliotecas externas; a preparação de localStorage deve aguardar um documento HTTP em vez de about:blank. Não foram defeitos de persistência do módulo.
 - Captura de protótipo gerada de uma execução real com exemplo fictício identificado como demonstração.
 - Testes JavaScript preexistentes: 9 verificações aprovadas. O CRUD PHP/MySQL completo não foi reexecutado nesta atividade; não houve modificação nele.
+
+### Documentação e validação final de V1
+
+- Criados README.md e docs/defesa.md com os dez conceitos, decisões técnicas, resultados, limites e oito slides no tempo solicitado. Identificação dos integrantes e RAs permanece para preenchimento humano.
+- Execução final: 52 verificações do diário e 9 da integração JavaScript preexistente aprovadas. Testes HTTP com o router PHP real: HTML/CSS/JS/sessão 200 e configuração interna 404. Capturas de 1440px e 320px inspecionadas; a de desktop acompanha a entrega.
+- Arquivo de testes separado em tests/diario_campo.cjs usa Playwright somente como ferramenta de teste, sem importá-lo na página.
+- Código gerado/modificado: todos os arquivos listados na tabela de docs/defesa.md. Trechos principais: HTML semântico/formulário; CSS reset/Flex/Grid/media queries; JS carregarDados/salvarDados/validarFormulario/CRUD/renderização/eventos; três links em public/index.html.
+- Conceito da solução: o array local é a fonte de estado; a interface é derivada dele; preparar/persistir o novo array antes de confirmá-lo evita apresentar sucesso quando a escrita falha. Nenhuma informação é enviada ao banco.
+- Refinamentos solicitados pelo grupo após o prompt: nenhum nesta interação. Ajustes de testes/links foram autorrevisões da IA durante V1.
+- Alterações manuais do grupo: nenhuma observada. Revisão dos integrantes, decisões e aprendizados ainda pendentes.
+- V2 e V3 continuam em aberto. Este registro não simula uma conversa posterior nem uma aprovação humana.
